@@ -30,6 +30,7 @@ export declare namespace hterm {
     }
 
     export var defaultStorage: lib.Storage;
+    export var VT: any;
 }
 
 export declare namespace lib {

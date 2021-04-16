@@ -198,6 +198,7 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
 
 	var siteMux = http.NewServeMux()
 	siteMux.HandleFunc(pathPrefix, server.handleIndex)
+	siteMux.Handle(pathPrefix+"spice/", http.StripPrefix(pathPrefix, staticFileHandler))
 	siteMux.Handle(pathPrefix+"js/", http.StripPrefix(pathPrefix, staticFileHandler))
 	siteMux.Handle(pathPrefix+"favicon.png", http.StripPrefix(pathPrefix, staticFileHandler))
 	siteMux.Handle(pathPrefix+"css/", http.StripPrefix(pathPrefix, staticFileHandler))
@@ -219,7 +220,7 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
 
 	wsMux := http.NewServeMux()
 	wsMux.Handle("/", siteHandler)
-	wsMux.HandleFunc(pathPrefix+"ws", server.generateHandleWS(ctx, cancel, counter))
+	wsMux.HandleFunc(pathPrefix+"ws/", server.generateHandleWS(ctx, cancel, counter))
 	siteHandler = http.Handler(wsMux)
 
 	return siteHandler

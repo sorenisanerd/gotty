@@ -10,9 +10,9 @@ docker:
 	docker build . -t gotty-bash:$(VERSION)
 
 .PHONY: asset
-asset: bindata/static/js/gotty.js bindata/static/index.html bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css bindata/static/manifest.json bindata/static/icon_192.png server/asset.go
+asset: bindata/static/js/gotty.js bindata/static/js/spice.js bindata/static/index.html bindata/static/spice bindata/static/favicon.png bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css bindata/static/manifest.json bindata/static/icon_192.png server/asset.go
 
-server/asset.go:
+server/asset.go: $(shell find bindata)
 	go-bindata -prefix bindata -pkg server -ignore=\\.gitkeep -o server/asset.go bindata/...
 	gofmt -w server/asset.go
 
@@ -24,6 +24,9 @@ bindata:
 
 bindata/static: bindata
 	mkdir bindata/static
+
+bindata/static/spice: 
+	cp -r js/spice-web-client bindata/static/spice
 
 bindata/static/index.html: bindata/static resources/index.html
 	cp resources/index.html bindata/static/index.html
@@ -56,7 +59,7 @@ js/node_modules/xterm/dist/xterm.css:
 	cd js && \
 	npm install
 
-bindata/static/js/gotty.js: js/src/* js/node_modules/webpack
+bindata/static/js/gotty.js: js/src/
 	cd js && \
 	npx webpack
 

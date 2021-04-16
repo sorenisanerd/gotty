@@ -6,8 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
+	"strings"
 	"sync/atomic"
 
 	"github.com/gorilla/websocket"
@@ -72,7 +74,7 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 		}
 		defer conn.Close()
 
-		err = server.processWSConn(ctx, conn)
+		err = server.processWSConn(ctx, conn, r)
 
 		switch err {
 		case ctx.Err():
@@ -87,24 +89,72 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 	}
 }
 
-func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn) error {
+func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, r *http.Request) error {
 	typ, initLine, err := conn.ReadMessage()
 	if err != nil {
-		return errors.Wrapf(err, "failed to authenticate websocket connection")
+		return errors.Wrapf(err, "failed to initialize websocket connection")
 	}
-	if typ != websocket.TextMessage {
-		return errors.New("failed to authenticate websocket connection: invalid message type")
-	}
+	switch typ {
+	case websocket.TextMessage:
+		var initMsg InitMessage
+		err = json.Unmarshal(initLine, &initMsg)
+		if err != nil {
+			return errors.Wrapf(err, "failed to authenticate websocket connection")
+		}
+		if initMsg.AuthToken != server.options.Credential {
+			return errors.New("failed to authenticate websocket connection")
+		}
 
-	var init InitMessage
-	err = json.Unmarshal(initLine, &init)
+		return server.processTTYWSConn(ctx, conn, initMsg)
+	case websocket.BinaryMessage:
+		items := strings.Split(r.RequestURI, "/")
+		port := items[len(items)-1]
+		host := items[len(items)-2]
+		dest := host + ":" + port
+		return server.processProxyWSConn(ctx, conn, initLine, dest)
+	}
+	return nil
+}
+
+func (server *Server) processProxyWSConn(ctx context.Context, conn *websocket.Conn, msg []byte, dest string) error {
+	tcpconn, err := net.Dial("tcp", dest)
 	if err != nil {
-		return errors.Wrapf(err, "failed to authenticate websocket connection")
+		conn.Close()
+		return err
 	}
-	if init.AuthToken != server.options.Credential {
-		return errors.New("failed to authenticate websocket connection")
+	n, err := tcpconn.Write(msg)
+	if err != nil || n == 0 {
+		return err
 	}
+	defer tcpconn.Close()
+	go func() {
+		defer conn.Close()
+		defer tcpconn.Close()
+		for {
+			buf := make([]byte, 1024)
+			readSize, err := tcpconn.Read(buf)
+			if err != nil || readSize == 0 {
+				return
+			}
+			conn.WriteMessage(websocket.BinaryMessage, buf[:readSize])
+		}
+	}()
+	for {
+		msgType, msg, err := conn.ReadMessage()
+		if err != nil {
+			return err
+		}
+		if msgType != websocket.BinaryMessage {
+			log.Print("Non binary message recieved")
+		}
+		n, err := tcpconn.Write(msg)
+		if err != nil || n == 0 {
+			return err
+		}
+	}
+}
 
+func (server *Server) processTTYWSConn(ctx context.Context, conn *websocket.Conn, init InitMessage) error {
 	queryPath := "?"
 	if server.options.PermitArguments && init.Arguments != "" {
 		queryPath = init.Arguments
