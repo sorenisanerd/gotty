@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/fatih/structs"
-	"github.com/urfave/cli"
+	"github.com/urfave/cli/v2"
 	"github.com/yudai/hcl"
 
 	"github.com/sorenisanerd/gotty/pkg/homedir"
@@ -28,32 +28,36 @@ func GenerateFlags(options ...interface{}) (flags []cli.Flag, mappings map[strin
 			mappings[flagName] = field.Name()
 
 			flagShortName := field.Tag("flagSName")
+			var aliases []string
 			if flagShortName != "" {
-				flagName += ", " + flagShortName
+				aliases = []string{flagShortName}
 			}
 
 			flagDescription := field.Tag("flagDescribe")
 
 			switch field.Kind() {
 			case reflect.String:
-				flags = append(flags, cli.StringFlag{
-					Name:   flagName,
-					Value:  field.Value().(string),
-					Usage:  flagDescription,
-					EnvVar: envName,
+				flags = append(flags, &cli.StringFlag{
+					Name:    flagName,
+					Value:   field.Value().(string),
+					Usage:   flagDescription,
+					EnvVars: []string{envName},
+					Aliases: aliases,
 				})
 			case reflect.Bool:
-				flags = append(flags, cli.BoolFlag{
-					Name:   flagName,
-					Usage:  flagDescription,
-					EnvVar: envName,
+				flags = append(flags, &cli.BoolFlag{
+					Name:    flagName,
+					Usage:   flagDescription,
+					EnvVars: []string{envName},
+					Aliases: aliases,
 				})
 			case reflect.Int:
-				flags = append(flags, cli.IntFlag{
-					Name:   flagName,
-					Value:  field.Value().(int),
-					Usage:  flagDescription,
-					EnvVar: envName,
+				flags = append(flags, &cli.IntFlag{
+					Name:    flagName,
+					Value:   field.Value().(int),
+					Usage:   flagDescription,
+					EnvVars: []string{envName},
+					Aliases: aliases,
 				})
 			}
 		}
