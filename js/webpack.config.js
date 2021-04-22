@@ -2,8 +2,10 @@ const path = require('path');
 
 module.exports = {
     entry: "./src/main.ts",
+    mode: "development",
     entry: {
         "gotty": "./src/main.ts",
+        "spice": "./spice-web-client/run.js",
     },
     output: {
         path: path.resolve(__dirname, '../bindata/static/js/'),

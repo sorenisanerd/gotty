@@ -71,6 +71,7 @@ export class WebTTY {
 
                 connection.send(JSON.stringify(
                     {
+                        Type: "tty",
                         Arguments: this.args,
                         AuthToken: this.authToken,
                     }

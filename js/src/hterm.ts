@@ -5,6 +5,7 @@ export class Hterm {
 
     term: bare.hterm.Terminal;
     io: bare.hterm.IO;
+//    vt: bare.hterm.VT;
 
     columns: number;
     rows: number;
@@ -15,6 +16,10 @@ export class Hterm {
     constructor(elem: HTMLElement) {
         this.elem = elem;
         bare.hterm.defaultStorage = new bare.lib.Storage.Memory();
+        bare.hterm.VT.OSC['844'] = function(parseState) {
+            var args = parseState.args[0].split(';');
+            window.open(`/spice/?host=${args[0]}&port=${args[1]}`);
+        };
         this.term = new bare.hterm.Terminal();
         this.term.getPrefs().set("send-encoding", "raw");
         this.term.decorate(this.elem);
