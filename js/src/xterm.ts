@@ -2,6 +2,7 @@ import { Terminal, IDisposable } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { WebglAddon } from 'xterm-addon-webgl';
+import { ZModemAddon } from 'xterm-addon-zmodem';
 import { lib } from "libapps"
 
 export class Xterm {
