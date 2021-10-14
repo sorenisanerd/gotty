@@ -3,6 +3,7 @@ package localcommand
 import (
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
@@ -27,10 +28,21 @@ type LocalCommand struct {
 	ptyClosed chan struct{}
 }
 
-func New(command string, argv []string, options ...Option) (*LocalCommand, error) {
+func New(command string, argv []string, headers map[string][]string, options ...Option) (*LocalCommand, error) {
 	cmd := exec.Command(command, argv...)
 
 	cmd.Env = append(os.Environ(), "TERM=xterm-256color")
+
+	// Combine headers into key=value pairs to set as env vars
+	// Prefix the headers with "http_" so we don't overwrite any other env vars
+	// which potentially has the same name and to bring these closer to what
+	// a (F)CGI server would proxy to a backend service
+	// Replace hyphen with underscore and make them all upper case
+	for key, values := range headers {
+		h := "HTTP_" + strings.Replace(strings.ToUpper(key), "-", "_", -1) + "=" + strings.Join(values, ",")
+		// log.Printf("Adding header: %s", h)
+		cmd.Env = append(cmd.Env, h)
+	}
 
 	pty, err := pty.Start(cmd)
 	if err != nil {
