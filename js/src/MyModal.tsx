@@ -1,6 +1,7 @@
 import { createRef, Component, ComponentChildren } from "preact";
 import { Modal } from "bootstrap";
 import './bootstrap.scss';
+import './style.scss';
 
 interface ModalProps {
   children: ComponentChildren;
