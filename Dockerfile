@@ -2,6 +2,7 @@ FROM golang:1.16
 
 WORKDIR /gotty
 COPY . /gotty
+RUN apt-get update && apt-get install -y nodejs npm
 RUN CGO_ENABLED=0 make
 
 FROM alpine:latest
