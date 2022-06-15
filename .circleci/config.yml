@@ -12,8 +12,8 @@ jobs:
           command: |
             DOCKER_TAG=$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
             docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
-            docker build -t honestica/gotty:$DOCKER_TAG .
-            docker push honestica/gotty:$DOCKER_TAG
+            docker build -t honestica/gotty-v2:$DOCKER_TAG .
+            docker push honestica/gotty-v2:$DOCKER_TAG
 workflows:
   version: 2
   build:
