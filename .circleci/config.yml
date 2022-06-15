@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Build Gotty Image
+          command: |
+            DOCKER_TAG=$CIRCLE_BRANCH-$CIRCLE_BUILD_NUM
+            docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+            docker build -t honestica/gotty:$DOCKER_TAG .
+            docker push honestica/gotty:$DOCKER_TAG
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          context: org-global
