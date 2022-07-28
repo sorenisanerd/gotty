@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"sync/atomic"
 
 	"github.com/gorilla/websocket"
@@ -253,4 +254,11 @@ func (server *Server) titleVariables(order []string, varUnits map[string]map[str
 	}
 
 	return titleVars
+}
+
+func (server *Server) handleWSCount(c *counter) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Write([]byte(`{"number":` + strconv.Itoa(c.count()) + `}`))
+	}
 }
