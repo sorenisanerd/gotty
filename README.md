@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-39-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-40-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -239,6 +239,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/jkandasa"><img src="https://avatars.githubusercontent.com/u/1004403?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeeva Kandasamy</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=jkandasa" title="Code">💻</a></td>
     <td align="center"><a href="https://twitch.tv/iamhardliner"><img src="https://avatars.githubusercontent.com/u/2937272?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Steve Biedermann</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=hardliner66" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/xgdgsc"><img src="https://avatars.githubusercontent.com/u/1189869?v=4?s=100" width="100px;" alt=""/><br /><sub><b>xgdgsc</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=xgdgsc" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/flechaig"><img src="https://avatars.githubusercontent.com/u/10887132?v=4?s=100" width="100px;" alt=""/><br /><sub><b>flechaig</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=flechaig" title="Code">💻</a></td>
   </tr>
 </table>
 
