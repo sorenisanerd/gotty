@@ -3,6 +3,7 @@ GIT_COMMIT = `git rev-parse HEAD | cut -c1-7`
 VERSION = $(shell git describe --tags)
 BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION)"
 WEBPACK_MODE = production
+export CGO_ENABLED=0
 
 gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
 	go build ${BUILD_OPTIONS}
