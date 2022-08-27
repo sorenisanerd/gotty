@@ -369,6 +369,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "Fan-SJ",
+      "name": "Fan-SJ",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49977708?v=4",
+      "profile": "https://github.com/Fan-SJ",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
