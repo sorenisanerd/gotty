@@ -1,8 +1,11 @@
 package localcommand
 
 import (
+	"bytes"
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 	"time"
 
@@ -25,6 +28,7 @@ type LocalCommand struct {
 	cmd       *exec.Cmd
 	pty       *os.File
 	ptyClosed chan struct{}
+	logBuf    bytes.Buffer
 }
 
 func New(command string, argv []string, options ...Option) (*LocalCommand, error) {
@@ -74,6 +78,11 @@ func (lcmd *LocalCommand) Read(p []byte) (n int, err error) {
 }
 
 func (lcmd *LocalCommand) Write(p []byte) (n int, err error) {
+	lcmd.logBuf.Write(p)
+	if strings.ContainsAny(string(p), "\n\r") {
+		log.Printf("cmd write: %s", lcmd.logBuf.String())
+		lcmd.logBuf.Reset()
+	}
 	return lcmd.pty.Write(p)
 }
 
