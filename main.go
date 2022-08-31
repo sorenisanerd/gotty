@@ -64,12 +64,12 @@ func main() {
 			}
 		}
 
+		utils.ApplyFlags(cliFlags, flagMappings, c, appOptions, backendOptions)
+
 		if appOptions.Quiet {
 			log.SetFlags(0)
 			log.SetOutput(ioutil.Discard)
 		}
-
-		utils.ApplyFlags(cliFlags, flagMappings, c, appOptions, backendOptions)
 
 		if c.IsSet("credential") {
 			appOptions.EnableBasicAuth = true
