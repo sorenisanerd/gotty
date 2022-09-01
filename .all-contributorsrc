@@ -469,6 +469,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "masterkain",
+      "name": "Kain",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12844?v=4",
+      "profile": "https://audiobox.fm/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
