@@ -7,6 +7,25 @@ on:
 
 
 jobs:
+  bundle-up-to-date:
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - run: "make clean"
+    - run: "make assets"
+    - name: "Make sure gotty.js bundle is up-to-date"
+      run: "diffsize=$(git diff bindata/static/js/gotty.js |  wc -l); test $diffsize == 0"
+
+
   build-test:
     runs-on: "ubuntu-latest"
 
