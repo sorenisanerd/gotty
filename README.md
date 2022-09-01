@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-42-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-43-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -242,6 +242,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/flechaig"><img src="https://avatars.githubusercontent.com/u/10887132?v=4?s=100" width="100px;" alt=""/><br /><sub><b>flechaig</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=flechaig" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/Fan-SJ"><img src="https://avatars.githubusercontent.com/u/49977708?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Fan-SJ</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3AFan-SJ" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/dmartin"><img src="https://avatars.githubusercontent.com/u/1657652?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dustin Martin</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Admartin" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://ahmet.dev/"><img src="https://avatars.githubusercontent.com/u/159209?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ahmet Alp Balkan</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aahmetb" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
