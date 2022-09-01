@@ -405,6 +405,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "DannyBen",
+      "name": "Danny Ben Shitrit",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2405099?v=4",
+      "profile": "https://github.dannyben.com/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
