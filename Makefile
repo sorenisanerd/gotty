@@ -79,3 +79,7 @@ release:
 
 clean:
 	rm -fr gotty builds js/dist bindata/static js/node_modules
+
+addcontributors:
+	gh issue list -s all -L 1000 --json author -t "$$(echo '{{ range . }}{{ .author.login }}\n{{ end }}')" | sort | uniq | xargs -Ifoo all-contributors add foo bug
+	gh pr list -s all -L 1000 --json author -t "$$(echo '{{ range . }}{{ .author.login }}\n{{ end }}')" | sort | uniq | xargs -Ifoo all-contributors add foo code
