@@ -424,6 +424,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "ghthor",
+      "name": "Will Owens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/160298?v=4",
+      "profile": "https://github.com/ghthor",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
