@@ -460,6 +460,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "LucaMarconato",
+      "name": "LucaMarconato",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2664412?v=4",
+      "profile": "https://github.com/LucaMarconato",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
