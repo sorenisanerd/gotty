@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-50-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -251,6 +251,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ghthor"><img src="https://avatars.githubusercontent.com/u/160298?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Will Owens</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aghthor" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://jpillora.com/"><img src="https://avatars.githubusercontent.com/u/633843?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jaime Pillora</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Ajpillora" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/kaisawind"><img src="https://avatars.githubusercontent.com/u/4010613?v=4?s=100" width="100px;" alt=""/><br /><sub><b>kaisawind</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Akaisawind" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/linyinli"><img src="https://avatars.githubusercontent.com/u/42955482?v=4?s=100" width="100px;" alt=""/><br /><sub><b>linyinli</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Alinyinli" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

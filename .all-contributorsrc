@@ -451,6 +451,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "linyinli",
+      "name": "linyinli",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42955482?v=4",
+      "profile": "https://github.com/linyinli",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
