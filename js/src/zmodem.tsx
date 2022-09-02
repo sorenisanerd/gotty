@@ -106,6 +106,8 @@ interface ReceiveFileModalState {
 }
 
 export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFileModalState> {
+    skipped: boolean;
+
     constructor(props) {
         super(props)
         this.setState({ state: "notstarted" })
@@ -136,7 +138,6 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
     }
 
     finish() {
-        console.log('finished');
         if (this.props.onFinish) this.props.onFinish();
     }
 
@@ -147,6 +148,11 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
     }
 
     skip() {
+        if (this.skipped) {
+            return
+        }
+        this.skipped = true;
+
         this.props.xfer.skip()
         this.setState({ state: "skipped" })
     }
@@ -172,6 +178,7 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
     render() {
         if (this.state.state != "done")
             return <MyModal title="Incoming file"
+                dismissHandler={() => this.skip()}
                 buttons={this.buttons()}>
                 Accept <code>{this.props.xfer.get_details().name}</code> ({this.props.xfer.get_details().size.toLocaleString(undefined, { maximumFractionDigits: 0 })} bytes)?
                 {this.progress()}
@@ -223,7 +230,9 @@ export class SendFileModal extends Component<SendFileModalProps, SendFileModalSt
     render() {
         if (this.state.state != "done")
             return <MyModal title="Send file(s)"
-                buttons={this.buttons()}>
+                buttons={this.buttons()}
+                dismissHandler={() => this.props.session.close()}
+                >
                 <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">
                         Remote requested file transfer
