@@ -26,7 +26,7 @@ jobs:
       run: "diffsize=$(git diff bindata/static/js/gotty.js |  wc -l); test $diffsize == 0"
 
 
-  build-test:
+  cross-compile-test:
     runs-on: "ubuntu-latest"
 
     steps:
@@ -42,7 +42,7 @@ jobs:
     - name: "Build & test"
       run: "make tools test cross_compile"
 
-    - name: Upload build artifacts
+    - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: binaries
