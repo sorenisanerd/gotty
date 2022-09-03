@@ -10,8 +10,11 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
+	"os/signal"
 	"regexp"
 	"strings"
+	"syscall"
 	noesctmpl "text/template"
 	"time"
 
@@ -177,6 +180,24 @@ func (server *Server) Run(ctx context.Context, options ...RunOption) error {
 		}
 	}()
 
+	signalUsr1 := make(chan os.Signal)
+	signal.Notify(signalUsr1, syscall.SIGUSR1)
+	go func() {
+		for {
+			value := <-signalUsr1
+			number := counter.count()
+			if number != 0 {
+				log.Printf("signal: %s current connection number: %d/%d", value.String(), number, server.options.MaxConnection)
+				continue
+			}
+			log.Printf("signal: %s current connection number is 0 and then will interrupt process", value.String())
+			e := syscall.Kill(os.Getpid(), syscall.SIGINT)
+			if e != nil && !errors.Is(e, syscall.ESRCH) {
+				log.Printf("signal: %s kill process error: %s", syscall.SIGINT.String(), e)
+			}
+			break
+		}
+	}()
 	select {
 	case err = <-srvErr:
 		if err == http.ErrServerClosed { // by gracefull ctx

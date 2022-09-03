@@ -141,6 +141,13 @@ To share your current session with others by a shortcut key, you can add a line 
 bind-key C-t new-window "gotty tmux attach -t `tmux display -p '#S'`"
 ```
 
+### Signal Notify
+
+GoTTY have registered `SIGINT`, `SIGTERM` and `SIGUSR1` signal.
+
+* `SIGINT`, `SIGTERM`: will terminate process or terminate it gracefully.
+* `SIGUSR1`: logging current connection number if activated number is not 0, or will send `SIGINT` signal. Especially useful in releasing resource according to your requirement.
+
 ## Playing with Docker
 
 When you want to create a jailed environment for each client, you can use Docker containers like following:
