@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -64,6 +65,11 @@ func main() {
 		}
 
 		utils.ApplyFlags(cliFlags, flagMappings, c, appOptions, backendOptions)
+
+		if appOptions.Quiet {
+			log.SetFlags(0)
+			log.SetOutput(ioutil.Discard)
+		}
 
 		if c.IsSet("credential") {
 			appOptions.EnableBasicAuth = true

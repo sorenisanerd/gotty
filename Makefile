@@ -2,6 +2,8 @@ OUTPUT_DIR = ./builds
 GIT_COMMIT = `git rev-parse HEAD | cut -c1-7`
 VERSION = $(shell git describe --tags)
 BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION)"
+WEBPACK_MODE = production
+export CGO_ENABLED=0
 
 gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
 	go build ${BUILD_OPTIONS}
@@ -9,52 +11,39 @@ gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
 docker: 
 	docker build . -t gotty-bash:$(VERSION)
 
-.PHONY: assets
-assets: bindata/static/js/gotty.js bindata/static/index.html bindata/static/icon.svg bindata/static/favicon.ico bindata/static/css/index.css bindata/static/css/xterm.css bindata/static/css/xterm_customize.css bindata/static/manifest.json bindata/static/icon_192.png
+.PHONY: all docker assets
+assets: bindata/static/js/gotty.js.map \
+	bindata/static/js/gotty.js \
+	bindata/static/index.html \
+	bindata/static/icon.svg \
+	bindata/static/favicon.ico \
+	bindata/static/css/index.css \
+	bindata/static/css/xterm.css \
+	bindata/static/css/xterm_customize.css \
+	bindata/static/manifest.json \
+	bindata/static/icon_192.png
 
-.PHONY: all
-all: gotty docker
+all: gotty
 
-bindata/static:
-	mkdir -p bindata/static
+bindata/static bindata/static/css bindata/static/js:
+	mkdir -p $@
 
-bindata/static/icon.svg: bindata/static resources/icon.svg
-	cp resources/icon.svg bindata/static/icon.svg
+bindata/static/%: resources/% | bindata/static/css 
+	cp "$<" "$@"
 
-bindata/static/index.html: bindata/static resources/index.html
-	cp resources/index.html bindata/static/index.html
+bindata/static/css/%.css: resources/%.css | bindata/static 
+	cp "$<" "$@"
 
-bindata/static/manifest.json: bindata/static resources/manifest.json
-	cp resources/manifest.json bindata/static/manifest.json
-
-bindata/static/favicon.ico: bindata/static resources/favicon.ico
-	cp resources/favicon.ico bindata/static/favicon.ico
-
-bindata/static/icon_192.png: bindata/static resources/icon_192.png
-	cp resources/icon_192.png bindata/static/icon_192.png
-
-bindata/static/js: bindata/static
-	mkdir -p bindata/static/js
-
-bindata/static/css: bindata/static
-	mkdir -p bindata/static/css
-
-bindata/static/css/index.css: bindata/static/css resources/index.css
-	cp resources/index.css bindata/static/css/index.css
-
-bindata/static/css/xterm_customize.css: bindata/static/css resources/xterm_customize.css
-	cp resources/xterm_customize.css bindata/static/css/xterm_customize.css
-
-bindata/static/css/xterm.css: bindata/static/css js/node_modules/xterm/css/xterm.css
-	cp js/node_modules/xterm/css/xterm.css bindata/static/css/xterm.css
+bindata/static/css/xterm.css: js/node_modules/xterm/css/xterm.css | bindata/static
+	cp "$<" "$@"
 
 js/node_modules/xterm/dist/xterm.css:
 	cd js && \
 	npm install
 
-bindata/static/js/gotty.js: js/src/* js/node_modules/webpack
+bindata/static/js/gotty.js.map bindata/static/js/gotty.js: js/src/* | js/node_modules/webpack
 	cd js && \
-	npx webpack
+	npx webpack --mode=$(WEBPACK_MODE)
 
 js/node_modules/webpack:
 	cd js && \
@@ -66,8 +55,8 @@ README-options:
 	rm options.txt.tmp
 
 tools:
-	go get github.com/mitchellh/gox
-	go get github.com/tcnksm/ghr
+	go install github.com/mitchellh/gox@latest
+	go install github.com/tcnksm/ghr@latest
 
 test:
 	if [ `go fmt $(go list ./... | grep -v /vendor/) | wc -l` -gt 0 ]; then echo "go fmt error"; exit 1; fi
@@ -89,4 +78,8 @@ release:
 	ghr -draft ${VERSION} ${OUTPUT_DIR}/dist # -c ${GIT_COMMIT} --delete --prerelease -u sorenisanerd -r gotty ${VERSION}
 
 clean:
-	rm -fr gotty builds js/dist bindata/static
+	rm -fr gotty builds js/dist bindata/static js/node_modules
+
+addcontributors:
+	gh issue list -s all -L 1000 --json author -t "$$(echo '{{ range . }}{{ .author.login }}\n{{ end }}')" | sort | uniq | xargs -Ifoo all-contributors add foo bug --commitTemplate '<%= (newContributor ? "Add" : "Update") %> @<%= username %> as a contributor'
+	gh pr list -s all -L 1000 --json author -t "$$(echo '{{ range . }}{{ .author.login }}\n{{ end }}')" | sort | uniq | xargs -Ifoo all-contributors add foo code --commitTemplate '<%= (newContributor ? "Add" : "Update") %> @<%= username %> as a contributor'

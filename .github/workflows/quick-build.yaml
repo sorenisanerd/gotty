@@ -1,0 +1,30 @@
+name: "Quick build test"
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+
+jobs:
+  quick-build-test:
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.19
+
+    - name: "Build"
+      run: "touch bindata/* bindata/*/* ; make"
+
+    - name: Upload linux/amd64 artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: gotty-linux-amd64
+        path: gotty
