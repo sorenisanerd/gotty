@@ -72,7 +72,11 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 		}
 		defer conn.Close()
 
-		err = server.processWSConn(ctx, conn, r.Header)
+		if server.options.PassHeaders {
+			err = server.processWSConn(ctx, conn, r.Header)
+		} else {
+			err = server.processWSConn(ctx, conn, nil)
+		}
 
 		switch err {
 		case ctx.Err():
