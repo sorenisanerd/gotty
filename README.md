@@ -5,9 +5,11 @@
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
+[![Maintainer streaming](https://twitch-status.soren.tools/sorencodes)][twitch]
 
 [release]: https://github.com/sorenisanerd/gotty/releases
 [license]: https://github.com/sorenisanerd/gotty/blob/master/LICENSE
+[twitch]: https://twitch.tv/sorencodes
 
 GoTTY is a simple command line tool that turns your CLI tools into web applications.
 
