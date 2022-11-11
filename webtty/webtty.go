@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
+	"github.com/sorenisanerd/gotty/utils"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -88,13 +90,14 @@ func (wt *WebTTY) Run(ctx context.Context) error {
 	go func() {
 		errs <- func() error {
 			buffer := make([]byte, wt.bufferSize)
+			lineBuffer := make([]byte, 1)
 			for {
 				n, err := wt.masterConn.Read(buffer)
 				if err != nil {
 					return ErrMasterClosed
 				}
 
-				err = wt.handleMasterReadEvent(buffer[:n])
+				err = wt.handleMasterReadEvent(buffer[:n], &lineBuffer)
 				if err != nil {
 					return err
 				}
@@ -163,7 +166,7 @@ func (wt *WebTTY) masterWrite(data []byte) error {
 	return nil
 }
 
-func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
+func (wt *WebTTY) handleMasterReadEvent(data []byte, line *[]byte) error {
 	if len(data) == 0 {
 		return errors.New("unexpected zero length read from master")
 	}
@@ -182,6 +185,13 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
 		n, err := wt.decoder.Decode(decodedBuffer, data[1:])
 		if err != nil {
 			return errors.Wrapf(err, "failed to decode received data")
+		}
+
+		*line = append(*line, decodedBuffer[:n]...)
+		//fmt.Printf("master read: %v  -> %v\n", decodedBuffer[:n], string(decodedBuffer[:n]))
+		if decodedBuffer[n-1] == 13 {
+			fmt.Printf("master read line: %v\n", utils.FormatOperationLog(line))
+			*line = nil
 		}
 
 		_, err = wt.slave.Write(decodedBuffer[:n])
