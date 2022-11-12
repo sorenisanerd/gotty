@@ -72,7 +72,12 @@ func (wt *WebTTY) Run(ctx context.Context) error {
 		errs <- func() error {
 			buffer := make([]byte, wt.bufferSize)
 			for {
-				n, err := wt.slave.Read(buffer)
+				//base64 length
+				effectiveBufferSize := wt.bufferSize - 1
+				//max raw data length
+				maxChunkSize := int(effectiveBufferSize/4) * 3
+
+				n, err := wt.slave.Read(buffer[:maxChunkSize])
 				if err != nil {
 					return ErrSlaveClosed
 				}
