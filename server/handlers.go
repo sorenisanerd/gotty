@@ -145,6 +145,7 @@ func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, h
 
 	opts := []webtty.Option{
 		webtty.WithWindowTitle(titleBuf.Bytes()),
+		webtty.WithArguments(params),
 	}
 	if server.options.PermitWrite {
 		opts = append(opts, webtty.WithPermitWrite())

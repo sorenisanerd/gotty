@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"github.com/sorenisanerd/gotty/utils"
+	"log"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -21,6 +21,7 @@ type WebTTY struct {
 	slave Slave
 
 	windowTitle []byte
+	arguments   map[string][]string
 	permitWrite bool
 	columns     int
 	rows        int
@@ -188,9 +189,12 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte, line *[]byte) error {
 		}
 
 		*line = append(*line, decodedBuffer[:n]...)
-		//fmt.Printf("master read: %v  -> %v\n", decodedBuffer[:n], string(decodedBuffer[:n]))
 		if decodedBuffer[n-1] == 13 {
-			fmt.Printf("master read line: %v\n", utils.FormatOperationLog(line))
+			argumentsByte, err := json.Marshal(wt.arguments)
+			if err != nil {
+				return errors.Wrapf(err, "failed to marshal arguments map")
+			}
+			log.Printf("[oplog] %s %s\n", utils.FormatOperationLog(line), string(argumentsByte))
 			*line = nil
 		}
 
