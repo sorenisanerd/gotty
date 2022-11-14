@@ -91,14 +91,14 @@ func (wt *WebTTY) Run(ctx context.Context) error {
 	go func() {
 		errs <- func() error {
 			buffer := make([]byte, wt.bufferSize)
-			lineBuffer := make([]byte, 1)
+			line := ""
 			for {
 				n, err := wt.masterConn.Read(buffer)
 				if err != nil {
 					return ErrMasterClosed
 				}
 
-				err = wt.handleMasterReadEvent(buffer[:n], &lineBuffer)
+				err = wt.handleMasterReadEvent(buffer[:n], &line)
 				if err != nil {
 					return err
 				}
@@ -167,7 +167,7 @@ func (wt *WebTTY) masterWrite(data []byte) error {
 	return nil
 }
 
-func (wt *WebTTY) handleMasterReadEvent(data []byte, line *[]byte) error {
+func (wt *WebTTY) handleMasterReadEvent(data []byte, line *string) error {
 	if len(data) == 0 {
 		return errors.New("unexpected zero length read from master")
 	}
@@ -188,15 +188,15 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte, line *[]byte) error {
 			return errors.Wrapf(err, "failed to decode received data")
 		}
 
-		*line = append(*line, decodedBuffer[:n]...)
+		// log.Printf("[wlog] %v %X\n", decodedBuffer[:n], decodedBuffer[:n])
+		utils.FormatWritesLog(decodedBuffer[:n], line)
 		if decodedBuffer[n-1] == 13 {
 			argumentsByte, err := json.Marshal(wt.arguments)
 			if err != nil {
 				return errors.Wrapf(err, "failed to marshal arguments map")
 			}
-			//log.Printf("[wlog] %v\n", line)
-			log.Printf("[wlog] %s %s\n", utils.FormatWritesLog(line), string(argumentsByte))
-			*line = nil
+			log.Printf("[wlog] %s %s\n", *line, string(argumentsByte))
+			*line = ""
 		}
 
 		_, err = wt.slave.Write(decodedBuffer[:n])
