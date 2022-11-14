@@ -1,6 +1,6 @@
 package utils
 
-func FormatWriteLog(line *[]byte) (log string) {
+func FormatWritesLog(line *[]byte) (log string) {
 	ascii := map[byte]string{
 		0:   "NUL",
 		1:   "SOH",
