@@ -194,7 +194,8 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte, line *[]byte) error {
 			if err != nil {
 				return errors.Wrapf(err, "failed to marshal arguments map")
 			}
-			log.Printf("[oplog] %s %s\n", utils.FormatOperationLog(line), string(argumentsByte))
+			log.Printf("[wlog] %v\n", line)
+			log.Printf("[wlog] %s %s\n", utils.FormatWriteLog(line), string(argumentsByte))
 			*line = nil
 		}
 
