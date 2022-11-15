@@ -12,7 +12,7 @@ func FormatWritesLog(codes []byte, line *string) {
 			codes = nil
 		}
 	}
-	// sh line prefix
+	// sh control codes
 	if n >= 6 {
 		if str, exist = ASCIIGroupToStr(fmt.Sprintf("%X", []byte{codes[0], codes[1], codes[n-1]})); exist {
 			*line += str
@@ -62,6 +62,7 @@ func ASCIIToStr(codes []byte) string {
 		29:  "GS",
 		30:  "RS",
 		31:  "US",
+		32:  "SPACE",
 		127: "DEL",
 	}
 
@@ -83,7 +84,7 @@ func ASCIIGroupToStr(sum string) (string, bool) {
 		"1B5B42": "DOWN",
 		"1B5B43": "RIGHT",
 		"1B5B44": "LEFT",
-		// sh line prefix: codes[0]codes[1]codes[5]
+		// sh control codes: codes[0]codes[1]codes[5]
 		// eg. "ESC[ 1;5 R"
 		"1B5B52": "",
 	}
