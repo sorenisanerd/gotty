@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"github.com/sorenisanerd/gotty/utils"
+	"log"
 	"sync"
 
 	"github.com/pkg/errors"
@@ -19,6 +21,7 @@ type WebTTY struct {
 	slave Slave
 
 	windowTitle []byte
+	arguments   map[string][]string
 	permitWrite bool
 	columns     int
 	rows        int
@@ -88,13 +91,14 @@ func (wt *WebTTY) Run(ctx context.Context) error {
 	go func() {
 		errs <- func() error {
 			buffer := make([]byte, wt.bufferSize)
+			line := ""
 			for {
 				n, err := wt.masterConn.Read(buffer)
 				if err != nil {
 					return ErrMasterClosed
 				}
 
-				err = wt.handleMasterReadEvent(buffer[:n])
+				err = wt.handleMasterReadEvent(buffer[:n], &line)
 				if err != nil {
 					return err
 				}
@@ -163,7 +167,7 @@ func (wt *WebTTY) masterWrite(data []byte) error {
 	return nil
 }
 
-func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
+func (wt *WebTTY) handleMasterReadEvent(data []byte, line *string) error {
 	if len(data) == 0 {
 		return errors.New("unexpected zero length read from master")
 	}
@@ -182,6 +186,17 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
 		n, err := wt.decoder.Decode(decodedBuffer, data[1:])
 		if err != nil {
 			return errors.Wrapf(err, "failed to decode received data")
+		}
+
+		// log.Printf("[wlog] %v %X\n", decodedBuffer[:n], decodedBuffer[:n])
+		utils.FormatWritesLog(decodedBuffer[:n], line)
+		if decodedBuffer[n-1] == 13 {
+			argumentsByte, err := json.Marshal(wt.arguments)
+			if err != nil {
+				return errors.Wrapf(err, "failed to marshal arguments map")
+			}
+			log.Printf("[wlog] %s %s\n", *line, string(argumentsByte))
+			*line = ""
 		}
 
 		_, err = wt.slave.Write(decodedBuffer[:n])

@@ -41,6 +41,14 @@ func WithWindowTitle(windowTitle []byte) Option {
 	}
 }
 
+// WithArguments sets the command line arguments that clients send
+func WithArguments(arguments map[string][]string) Option {
+	return func(wt *WebTTY) error {
+		wt.arguments = arguments
+		return nil
+	}
+}
+
 // WithReconnect enables reconnection on the master side.
 func WithReconnect(timeInSeconds int) Option {
 	return func(wt *WebTTY) error {

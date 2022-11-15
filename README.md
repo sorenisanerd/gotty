@@ -151,6 +151,36 @@ When you want to create a jailed environment for each client, you can use Docker
 $ gotty -w docker run -it --rm busybox
 ```
 
+## Writes log
+
+User's input in terminal can be found in logs. for example:
+
+if you run gotty like this:
+
+```shell
+./gotty -w --permit-arguments ./test.sh
+```
+
+this is `test.sh`:
+
+```sh
+#!/bin/bash
+
+echo "Welcome: $4"
+kubectl -n $1 exec -it $2 -c $3 -- sh
+```
+
+visit `http://127.0.0.1:8080/?arg=without-istio&arg=sleep-7b6d569576-57sjq&arg=sleep&arg=21001713` and input your commands in shell, and you will see operation logs in stdout:
+
+```
+...
+2022/11/13 10:48:12 [wlog] lsCR {"arg":["without-istio","sleep-7b6d569576-57sjq","sleep","21001713"]}
+2022/11/13 10:48:14 [wlog] pwdCR {"arg":["without-istio","sleep-7b6d569576-57sjq","sleep","21001713"]}
+...
+```
+
+Using the `[wlog]` flag, you can collect and store these logs persistently. All args are in the log, including the userID. 
+
 ## Development
 
 You can build a binary by simply running `make`. go1.16 is required.
