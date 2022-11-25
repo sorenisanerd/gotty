@@ -5,6 +5,7 @@
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)][license]
+
 [![Maintainer streaming](https://twitch-status.soren.tools/sorencodes)][twitch]
 
 [release]: https://github.com/sorenisanerd/gotty/releases
