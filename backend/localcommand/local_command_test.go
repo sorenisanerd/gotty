@@ -23,7 +23,7 @@ func TestNewFactory(t *testing.T) {
 		t.Errorf("factory.options = %v, expected %v", factory.options, &Options{})
 	}
 
-	slave, _ := factory.New(nil)
+	slave, _ := factory.New(nil, nil)
 	lcmd := slave.(*LocalCommand)
 	if lcmd.closeSignal != 123 {
 		t.Errorf("lcmd.closeSignal = %v, expected %v", lcmd.closeSignal, 123)
@@ -40,7 +40,7 @@ func TestFactoryNew(t *testing.T) {
 		return
 	}
 
-	slave, err := factory.New(nil)
+	slave, err := factory.New(nil, nil)
 	if err != nil {
 		t.Errorf("factory.New() returned error")
 		return

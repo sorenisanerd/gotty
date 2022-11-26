@@ -13,5 +13,5 @@ type Slave interface {
 
 type Factory interface {
 	Name() string
-	New(params map[string][]string) (Slave, error)
+	New(params map[string][]string, headers map[string][]string) (Slave, error)
 }
