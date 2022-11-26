@@ -10,7 +10,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../bindata/static/js/'),
     },
-    devtool: "source-map",
+    devtool: "inline-source-map",
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
     },

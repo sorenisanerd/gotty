@@ -2,13 +2,20 @@ OUTPUT_DIR = ./builds
 GIT_COMMIT = `git rev-parse HEAD | cut -c1-7`
 VERSION = $(shell git describe --tags)
 BUILD_OPTIONS = -ldflags "-X main.Version=$(VERSION)"
-WEBPACK_MODE = production
+
+ifeq ($(DEV), 1)
+	BUILD_OPTIONS += -tags dev
+	WEBPACK_MODE = development
+else
+	WEBPACK_MODE = production
+endif
+
 export CGO_ENABLED=0
 
 gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
 	go build ${BUILD_OPTIONS}
 
-docker: 
+docker:
 	docker build . -t gotty-bash:$(VERSION)
 
 .PHONY: all docker assets
