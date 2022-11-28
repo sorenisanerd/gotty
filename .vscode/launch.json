@@ -11,7 +11,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["-a", "127.0.0.1", "-w", "bash"]
+            "args": ["-a", "127.0.0.1", "-w", "${env:SHELL}"]
         },
         {
             "name": "Launch Chrome",
