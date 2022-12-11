@@ -2,6 +2,14 @@ const path = require('path');
 const TerserPlugin = require("terser-webpack-plugin");
 const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin;
 
+var devtool;
+
+if (process.env.DEV === '1') {
+    devtool = 'inline-source-map';
+} else {
+    devtool = 'source-map';
+}
+
 module.exports = {
     entry: "./src/main.ts",
     entry: {
@@ -10,7 +18,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, '../bindata/static/js/'),
     },
-    devtool: "source-map",
+    devtool: devtool,
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
     },
