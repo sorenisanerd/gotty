@@ -7,6 +7,9 @@
 // [bool] Permit clients to write to the TTY
 // permit_write = false
 
+// [bool] Log user's writes in the TTY
+// write_log = false
+
 // [bool] Enable basic authentication
 // enable_basic_auth = false
 
