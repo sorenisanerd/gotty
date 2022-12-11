@@ -150,6 +150,9 @@ func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, h
 	if server.options.PermitWrite {
 		opts = append(opts, webtty.WithPermitWrite())
 	}
+	if server.options.WriteLog {
+		opts = append(opts, webtty.WithWriteLog())
+	}
 	if server.options.EnableReconnect {
 		opts = append(opts, webtty.WithReconnect(server.options.ReconnectTime))
 	}
