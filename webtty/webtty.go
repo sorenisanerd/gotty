@@ -98,17 +98,13 @@ func (wt *WebTTY) Run(ctx context.Context) error {
 		errs <- func() error {
 			buffer := make([]byte, wt.bufferSize)
 			var line string
-			arguments, err := json.Marshal(wt.arguments)
-			if err != nil {
-				return err
-			}
 			for {
 				n, err := wt.masterConn.Read(buffer)
 				if err != nil {
 					return ErrMasterClosed
 				}
 
-				err = wt.handleMasterReadEvent(buffer[:n], &line, arguments)
+				err = wt.handleMasterReadEvent(buffer[:n], &line)
 				if err != nil {
 					return err
 				}
@@ -177,7 +173,7 @@ func (wt *WebTTY) masterWrite(data []byte) error {
 	return nil
 }
 
-func (wt *WebTTY) handleMasterReadEvent(data []byte, line *string, argument []byte) error {
+func (wt *WebTTY) handleMasterReadEvent(data []byte, line *string) error {
 	if len(data) == 0 {
 		return errors.New("unexpected zero length read from master")
 	}
@@ -203,7 +199,7 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte, line *string, argument []by
 			// 13(ASCII) means carriage return(CR)
 			// it is the end of a line
 			if decodedBuffer[n-1] == 13 {
-				log.Printf("[write-log] %s %s\n", argument, *line)
+				log.Printf("[write-log] %v %s\n", wt.arguments, *line)
 				*line = ""
 			}
 		}
