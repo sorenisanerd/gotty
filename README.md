@@ -175,8 +175,9 @@ visit `http://127.0.0.1:8080/?arg=without-istio&arg=sleep-7b6d569576-57sjq&arg=s
 
 ```
 ...
-2022/11/13 10:48:12 [write-log] {"arg":["without-istio","sleep-7b6d569576-57sjq","sleep","21001713"]} lsCR
-2022/11/13 10:48:14 [write-log] {"arg":["without-istio","sleep-7b6d569576-57sjq","sleep","21001713"]} pwdCR
+2022/12/13 13:36:46 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] ls[CR]
+2022/12/13 13:37:25 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] echo[SPACE]hello[SPACE]world;[CR]
+2022/12/13 13:47:00 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] [CUU][CR]
 ...
 ```
 

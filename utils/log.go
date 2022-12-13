@@ -1,8 +1,11 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"regexp"
+)
 
-var CtrlChar = map[byte]string{
+var ControlCodes = map[byte]string{
 	0:   "NUL",
 	1:   "SOH",
 	2:   "STX",
@@ -39,67 +42,73 @@ var CtrlChar = map[byte]string{
 	127: "DEL",
 }
 
-var CtrlCharGroup = map[string]string{
-	"1B5B41": "UP",
-	"1B5B42": "DOWN",
-	"1B5B43": "RIGHT",
-	"1B5B44": "LEFT",
-
-	// shell control codes
-	// codes[0]+codes[1]+codes[n-1]
-	// for example:
-	// [1B(ESC) 5B([) 32(2)       3B(;) 35(5) 52(R)]: row 2  col 5
-	// [1B(ESC) 5B([) 31(1) 30(0) 3B(;) 35(5) 52(R)]: row 10 col 5
-	// [1B(ESC) 5B([) 32(2) 32(2) 3B(;) 35(5) 52(R)]: row 22 col 5
-	"1B5B52": "",
-
-	// maybe there will be more control char group
-	// ...
+// https://en.wikipedia.org/wiki/ANSI_escape_code
+// https://xtermjs.org/docs/api/vtfeatures/
+var ControlSequences = map[string]string{
+	// Cursor Up
+	"ESC[A": "CUU",
+	// Cursor Down
+	"ESC[B": "CUD",
+	// Cursor Forward
+	"ESC[C": "CUF",
+	// Cursor Back
+	"ESC[D": "CUB",
 }
 
-func FormatWriteLog(codes []byte, line *string) {
-	n := len(codes)
-	// when user uses the keyboard arrow keys
-	// arrow keys are combination of 3 ASCII codes
-	if n == 3 {
-		if str, exist := ASCIIGroupToStr(fmt.Sprintf("%X", codes)); exist {
-			*line += str
-			return
-		}
-	}
-	// for some shells
-	// they will automatically send some control characters
-	// after typing the command and pressing Enter
-	// which indicate the current row and column.
-	if n >= 6 {
-		if str, exist := ASCIIGroupToStr(fmt.Sprintf("%X", []byte{codes[0], codes[1], codes[n-1]})); exist {
-			*line += str
-			return
-		}
-	}
-
-	str := ASCIIToStr(codes)
-	*line += str
-
-	return
+var ControlSequencePatterns = map[string]string{
+	// Device Status Report
+	// Reports the cursor position (CPR) by transmitting `ESC[n;mR`, where n is the row and m is the column.
+	"^ESC\\[\\d+;\\d+R$": "",
 }
 
-func ASCIIToStr(codes []byte) (str string) {
+func ControlCodesToStr(codes []byte) (str string) {
 	for _, code := range codes {
-		if value, ok := CtrlChar[code]; ok {
+		if value, ok := ControlCodes[code]; ok {
 			str += value
 		} else {
 			str += string(code)
 		}
 	}
-
 	return
 }
 
-func ASCIIGroupToStr(group string) (string, bool) {
-	if value, ok := CtrlCharGroup[group]; ok {
-		return value, true
+func ControlCodesToEscapedStr(codes []byte) (str string) {
+	for _, code := range codes {
+		if value, ok := ControlCodes[code]; ok {
+			str += fmt.Sprintf("[%s]", value)
+		} else if code == 91 || code == 92 || code == 93 {
+			// escaping [ ] \
+			str += fmt.Sprintf("\\%s", string(code))
+		} else {
+			str += string(code)
+		}
+	}
+	return
+}
+
+func ControlSequenceToStr(codes []byte) (string, bool) {
+	sequence := ControlCodesToStr(codes)
+	for key, value := range ControlSequences {
+		if key == sequence {
+			return fmt.Sprintf("[%s]", value), true
+		}
 	}
 
-	return "", false
+	for key, value := range ControlSequencePatterns {
+		if regexp.MustCompile(key).Match([]byte(sequence)) {
+			return value, true
+		}
+	}
+	return sequence, false
+}
+
+func FormatWriteLog(codes []byte, line *string) {
+	n := len(codes)
+	if n >= 3 {
+		if str, exists := ControlSequenceToStr(codes); exists {
+			*line += str
+			return
+		}
+	}
+	*line += ControlCodesToEscapedStr(codes)
 }
