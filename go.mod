@@ -11,5 +11,5 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/yudai/hcl v0.0.0-20151013225006-5fa2393b3552
-	golang.org/x/sys v0.0.0-20210415045647-66c3f260301c // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
