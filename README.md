@@ -179,7 +179,7 @@ GoTTY uses [xterm.js](https://xtermjs.org/) to run a JavaScript based terminal o
 
 # License
 
-The MIT License
+The MIT License.
 
 # Contributors
 
