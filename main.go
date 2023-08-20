@@ -12,7 +12,8 @@ import (
 
 	cli "github.com/urfave/cli/v2"
 
-	"github.com/sorenisanerd/gotty/backend/localcommand"
+	//"github.com/sorenisanerd/gotty/backend/localcommand"
+	"github.com/sorenisanerd/gotty/backend/docker"
 	"github.com/sorenisanerd/gotty/pkg/homedir"
 	"github.com/sorenisanerd/gotty/server"
 	"github.com/sorenisanerd/gotty/utils"
@@ -29,7 +30,8 @@ func main() {
 	if err := utils.ApplyDefaultValues(appOptions); err != nil {
 		exit(err, 1)
 	}
-	backendOptions := &localcommand.Options{}
+//	backendOptions := &localcommand.Options{}
+	backendOptions := &docker.Options{}
 	if err := utils.ApplyDefaultValues(backendOptions); err != nil {
 		exit(err, 1)
 	}
@@ -84,7 +86,8 @@ func main() {
 		}
 
 		args := c.Args()
-		factory, err := localcommand.NewFactory(args.First(), args.Tail(), backendOptions)
+//		factory, err := localcommand.NewFactory(args.First(), args.Tail(), backendOptions)
+		factory, err := docker.NewFactory(args.First(), args.Tail(), backendOptions)
 		if err != nil {
 			exit(err, 3)
 		}
