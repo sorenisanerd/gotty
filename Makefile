@@ -12,7 +12,7 @@ endif
 
 export CGO_ENABLED=0
 
-gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
+gotty: main.go assets server/*.go webtty/*.go backend/*/*.go Makefile
 	go build ${BUILD_OPTIONS}
 
 docker:
