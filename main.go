@@ -12,7 +12,7 @@ import (
 
 	cli "github.com/urfave/cli/v2"
 
-	//"github.com/sorenisanerd/gotty/backend/localcommand"
+	"github.com/sorenisanerd/gotty/backend/localcommand"
 	"github.com/sorenisanerd/gotty/backend/docker"
 	"github.com/sorenisanerd/gotty/pkg/homedir"
 	"github.com/sorenisanerd/gotty/server"
@@ -30,13 +30,16 @@ func main() {
 	if err := utils.ApplyDefaultValues(appOptions); err != nil {
 		exit(err, 1)
 	}
-//	backendOptions := &localcommand.Options{}
-	backendOptions := &docker.Options{}
-	if err := utils.ApplyDefaultValues(backendOptions); err != nil {
+	backendLocalOptions := &localcommand.Options{}
+	if err := utils.ApplyDefaultValues(backendLocalOptions); err != nil {
+		exit(err, 1)
+	}
+	backendDockerOptions := &docker.Options{}
+	if err := utils.ApplyDefaultValues(backendDockerOptions); err != nil {
 		exit(err, 1)
 	}
 
-	cliFlags, flagMappings, err := utils.GenerateFlags(appOptions, backendOptions)
+	cliFlags, flagMappings, err := utils.GenerateFlags(appOptions, backendLocalOptions, backendDockerOptions)
 	if err != nil {
 		exit(err, 3)
 	}
@@ -61,12 +64,12 @@ func main() {
 		configFile := c.String("config")
 		_, err := os.Stat(homedir.Expand(configFile))
 		if configFile != "~/.gotty" || !os.IsNotExist(err) {
-			if err := utils.ApplyConfigFile(configFile, appOptions, backendOptions); err != nil {
+			if err := utils.ApplyConfigFile(configFile, appOptions, backendLocalOptions, backendDockerOptions); err != nil {
 				exit(err, 2)
 			}
 		}
 
-		utils.ApplyFlags(cliFlags, flagMappings, c, appOptions, backendOptions)
+		utils.ApplyFlags(cliFlags, flagMappings, c, appOptions, backendLocalOptions, backendDockerOptions)
 
 		if appOptions.Quiet {
 			log.SetFlags(0)
@@ -86,8 +89,12 @@ func main() {
 		}
 
 		args := c.Args()
-//		factory, err := localcommand.NewFactory(args.First(), args.Tail(), backendOptions)
-		factory, err := docker.NewFactory(args.First(), args.Tail(), backendOptions)
+		var factory server.Factory
+		if c.IsSet("docker-container") {
+			factory, err = docker.NewFactory(args.First(), args.Tail(), backendDockerOptions)
+		} else {
+			factory, err = localcommand.NewFactory(args.First(), args.Tail(), backendLocalOptions)
+		}
 		if err != nil {
 			exit(err, 3)
 		}
