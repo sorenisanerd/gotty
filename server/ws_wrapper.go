@@ -1,7 +1,7 @@
 package server
 
 import (
-	"io/ioutil"
+	"io"
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
@@ -31,7 +31,7 @@ func (wsw *wsWrapper) Read(p []byte) (n int, err error) {
 			continue
 		}
 
-		b, err := ioutil.ReadAll(reader)
+		b, err := io.ReadAll(reader)
 		if len(b) > len(p) {
 			return 0, errors.Wrapf(err, "Client message exceeded buffer size")
 		}
