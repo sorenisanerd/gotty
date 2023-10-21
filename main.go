@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -68,7 +68,7 @@ func main() {
 
 		if appOptions.Quiet {
 			log.SetFlags(0)
-			log.SetOutput(ioutil.Discard)
+			log.SetOutput(io.Discard)
 		}
 
 		if c.IsSet("credential") {

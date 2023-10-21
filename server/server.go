@@ -6,10 +6,10 @@ import (
 	"crypto/x509"
 	"html/template"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 	noesctmpl "text/template"
@@ -45,7 +45,7 @@ func New(factory Factory, options *Options) (*Server, error) {
 	}
 	if options.IndexFile != "" {
 		path := homedir.Expand(options.IndexFile)
-		indexData, err = ioutil.ReadFile(path)
+		indexData, err = os.ReadFile(path)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to read custom index file at `%s`", path)
 		}
@@ -253,7 +253,7 @@ func (server *Server) setupHTTPServer(handler http.Handler) (*http.Server, error
 
 func (server *Server) tlsConfig() (*tls.Config, error) {
 	caFile := homedir.Expand(server.options.TLSCACrtFile)
-	caCert, err := ioutil.ReadFile(caFile)
+	caCert, err := os.ReadFile(caFile)
 	if err != nil {
 		return nil, errors.New("could not open CA crt file " + caFile)
 	}
