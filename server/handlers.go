@@ -9,11 +9,14 @@ import (
 	"net/http"
 	"net/url"
 	"sync/atomic"
+	"io"
+	"os"
+	"path/filepath"
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 
-	"github.com/sorenisanerd/gotty/webtty"
+	"github.com/unskript/gotty/webtty"
 )
 
 func (server *Server) generateHandleWS(ctx context.Context, cancel context.CancelFunc, counter *counter) http.HandlerFunc {
@@ -257,4 +260,71 @@ func (server *Server) titleVariables(order []string, varUnits map[string]map[str
 	}
 
 	return titleVars
+}
+
+// Add a new method to handle file download to gotty
+func (server *Server) handleDownload(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    // Get the file from the form data
+    file, handler, err := r.FormFile("file")
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error retrieving file: %s", err), http.StatusBadRequest)
+        return
+    }
+    defer file.Close()
+
+    // Save the file to a location (you might want to customize this)
+    filepath := filepath.Join("/unskript/downloads/", handler.Filename)
+    outFile, err := os.Create(filepath)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error creating file: %s", err), http.StatusInternalServerError)
+        return
+    }
+    defer outFile.Close()
+
+    // Copy the file content to the destination file
+    _, err = io.Copy(outFile, file)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error copying file: %s", err), http.StatusInternalServerError)
+        return
+    }
+
+    log.Printf("File %s Downloaded successfully", handler.Filename)
+}
+
+// Add a new method to handle file uploads from gotty
+func (server *Server) handleUpload(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    // Retrieve the file path from the request parameters
+    filePath := r.FormValue("path")
+    if filePath == "" {
+        http.Error(w, "File path parameter 'path' is missing", http.StatusBadRequest)
+        return
+    }
+
+    // Open the file
+    file, err := os.Open(filePath)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error opening file: %s", err), http.StatusInternalServerError)
+        return
+    }
+    defer file.Close()
+
+    // Set the appropriate headers for download
+    w.Header().Set("Content-Disposition", "attachment; filename="+filepath.Base(filePath))
+    w.Header().Set("Content-Type", "application/octet-stream")
+
+    // Copy the file content to the response writer
+    _, err = io.Copy(w, file)
+    if err != nil {
+        http.Error(w, fmt.Sprintf("Error copying file to response: %s", err), http.StatusInternalServerError)
+        return
+    }
 }

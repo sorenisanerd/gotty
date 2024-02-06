@@ -1,4 +1,4 @@
-module github.com/sorenisanerd/gotty
+module github.com/unskript/gotty
 
 go 1.20
 

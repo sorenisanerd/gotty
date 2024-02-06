@@ -19,10 +19,10 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 
-	"github.com/sorenisanerd/gotty/bindata"
-	"github.com/sorenisanerd/gotty/pkg/homedir"
-	"github.com/sorenisanerd/gotty/pkg/randomstring"
-	"github.com/sorenisanerd/gotty/webtty"
+	"github.com/unskript/gotty/bindata"
+	"github.com/unskript/gotty/pkg/homedir"
+	"github.com/unskript/gotty/pkg/randomstring"
+	"github.com/unskript/gotty/webtty"
 )
 
 // Server provides a webtty HTTP endpoint.
@@ -231,6 +231,10 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
 	wsMux.Handle("/", siteHandler)
 	wsMux.HandleFunc(pathPrefix+"ws", server.generateHandleWS(ctx, cancel, counter))
 	siteHandler = http.Handler(wsMux)
+
+	siteMux.HandleFunc(pathPrefix+"upload", server.handleUpload)
+	siteMux.HandleFunc(pathPrefix+"download", server.handleDownload)
+
 
 	return siteHandler
 }
