@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"reflect"
@@ -114,7 +113,7 @@ func ApplyConfigFile(filePath string, options ...interface{}) error {
 
 	fileString := []byte{}
 	log.Printf("Loading config file at: %s", filePath)
-	fileString, err := ioutil.ReadFile(filePath)
+	fileString, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
