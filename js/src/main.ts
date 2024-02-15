@@ -1,10 +1,11 @@
-import { OurXterm } from "./xterm";
-import { Terminal, WebTTY, protocols } from "./webtty";
 import { ConnectionFactory } from "./websocket";
+import { Terminal, WebTTY, protocols } from "./webtty";
+import { OurXterm } from "./xterm";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
 declare var gotty_term: string;
+declare var gotty_ws_query_args: string;
 
 const elem = document.getElementById("terminal")
 
@@ -13,7 +14,8 @@ if (elem !== null) {
     term = new OurXterm(elem);
 
     const httpsEnabled = window.location.protocol == "https:";
-    const url = (httpsEnabled ? 'wss://' : 'ws://') + window.location.host + window.location.pathname + 'ws';
+    const queryArgs = (gotty_ws_query_args === "") ? "" : "?" + gotty_ws_query_args;
+    const url = (httpsEnabled ? 'wss://' : 'ws://') + window.location.host + window.location.pathname + 'ws' + queryArgs;
     const args = window.location.search;
     const factory = new ConnectionFactory(url, protocols);
     const wt = new WebTTY(term, factory, args, gotty_auth_token);
