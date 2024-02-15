@@ -1,4 +1,4 @@
-import { Terminal, IDisposable } from "xterm";
+import { IDisposable, Terminal } from "xterm";
 import { FitAddon } from 'xterm-addon-fit';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { WebglAddon } from 'xterm-addon-webgl';
@@ -104,9 +104,9 @@ export class OurXterm {
             if (key == "EnableWebGL" && key) {
                 this.term.loadAddon(new WebglAddon());
             } else if (key == "font-size") {
-                this.term.setOption("fontSize", value[key])
+                this.term.options.fontSize = value[key]
             } else if (key == "font-family") {
-                this.term.setOption("fontFamily", value[key])
+                this.term.options.fontFamily = value[key]
             }
         });
     };
