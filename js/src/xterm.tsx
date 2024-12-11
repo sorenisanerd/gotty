@@ -46,6 +46,12 @@ export class OurXterm {
             this.term.scrollToBottom();
             this.showMessage(String(this.term.cols) + "x" + String(this.term.rows), this.messageTimeout);
         };
+        
+        const input = this.term.textarea()
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('spellcheck', 'false');
 
         this.term.open(elem);
         this.term.focus();
