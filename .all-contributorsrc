@@ -540,6 +540,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "alphajoza",
+      "name": "alphajoza",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16447592?v=4",
+      "profile": "https://github.com/alphajoza",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
