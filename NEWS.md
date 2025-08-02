@@ -1,3 +1,12 @@
+##  v1.5.1 (2025-08-02)
+
+* Add Docker build. Thanks, @callumgare!
+* Add a workflow to check embedded bundle is up-to-date.
+* Allow setting arguments (like, say, an auth token) to be added to ws:// url. Thanks @josegonzalez!
+* Update Golang imports for newer ioutil. Thanks @180909!
+* Fix buffer size for slave output. Thanks @funnywwh!
+* Add `--pass-headers` option to set environment variables based on HTTP headers. Thanks @lukaszlach!
+
 ## 1.5.0 (2022-09-01)
 
 * Add @ahmetb as a contributor ([276767a](https://github.com/sorenisanerd/gotty/commit/276767a))
