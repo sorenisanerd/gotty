@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-77-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-78-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -293,6 +293,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://lach.dev/"><img src="https://avatars.githubusercontent.com/u/5011490?v=4?s=100" width="100px;" alt="Łukasz Lach"/><br /><sub><b>Łukasz Lach</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=lukaszlach" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/nuttingd"><img src="https://avatars.githubusercontent.com/u/1181562?v=4?s=100" width="100px;" alt="David Nutting"/><br /><sub><b>David Nutting</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=nuttingd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/rlmcpherson"><img src="https://avatars.githubusercontent.com/u/1706273?v=4?s=100" width="100px;" alt="Randall McPherson"/><br /><sub><b>Randall McPherson</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=rlmcpherson" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/sagar-salvi-unskript"><img src="https://avatars.githubusercontent.com/u/95602213?v=4?s=100" width="100px;" alt="sagar-salvi-unskript"/><br /><sub><b>sagar-salvi-unskript</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=sagar-salvi-unskript" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
