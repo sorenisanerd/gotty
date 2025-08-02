@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-74-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-75-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -290,6 +290,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/devnull"><img src="https://avatars.githubusercontent.com/u/56172?v=4?s=100" width="100px;" alt="Mike Bentzen"/><br /><sub><b>Mike Bentzen</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=devnull" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/funnywwh"><img src="https://avatars.githubusercontent.com/u/4208460?v=4?s=100" width="100px;" alt="zigger"/><br /><sub><b>zigger</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=funnywwh" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/llaoj"><img src="https://avatars.githubusercontent.com/u/17629142?v=4?s=100" width="100px;" alt="老J"/><br /><sub><b>老J</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=llaoj" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://lach.dev/"><img src="https://avatars.githubusercontent.com/u/5011490?v=4?s=100" width="100px;" alt="Łukasz Lach"/><br /><sub><b>Łukasz Lach</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=lukaszlach" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

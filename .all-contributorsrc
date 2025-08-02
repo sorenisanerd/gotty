@@ -678,6 +678,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "lukaszlach",
+      "name": "Łukasz Lach",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5011490?v=4",
+      "profile": "https://lach.dev/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
