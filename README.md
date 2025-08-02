@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-62-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -271,6 +271,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/alirezafarnoosh"><img src="https://avatars.githubusercontent.com/u/47647930?v=4?s=100" width="100px;" alt="alirezafarnoosh"/><br /><sub><b>alirezafarnoosh</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aalirezafarnoosh" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/alphajoza"><img src="https://avatars.githubusercontent.com/u/16447592?v=4?s=100" width="100px;" alt="alphajoza"/><br /><sub><b>alphajoza</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aalphajoza" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/dillfrescott"><img src="https://avatars.githubusercontent.com/u/56714680?v=4?s=100" width="100px;" alt="Cross Nastasi"/><br /><sub><b>Cross Nastasi</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Adillfrescott" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://nathguil.free.fr/"><img src="https://avatars.githubusercontent.com/u/47187?v=4?s=100" width="100px;" alt="Guilhem Bonnefille"/><br /><sub><b>Guilhem Bonnefille</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aguyou" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

@@ -558,6 +558,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "guyou",
+      "name": "Guilhem Bonnefille",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47187?v=4",
+      "profile": "http://nathguil.free.fr/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
