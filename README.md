@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-70-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-71-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -284,6 +284,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/stevelaclasse"><img src="https://avatars.githubusercontent.com/u/29569191?v=4?s=100" width="100px;" alt="stevelaclasse"/><br /><sub><b>stevelaclasse</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Astevelaclasse" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/180909"><img src="https://avatars.githubusercontent.com/u/70465953?v=4?s=100" width="100px;" alt="180909"/><br /><sub><b>180909</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=180909" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/benoittgt"><img src="https://avatars.githubusercontent.com/u/8417720?v=4?s=100" width="100px;" alt="Benoit Tigeot"/><br /><sub><b>Benoit Tigeot</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=benoittgt" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://callum.gare.au/"><img src="https://avatars.githubusercontent.com/u/346340?v=4?s=100" width="100px;" alt="Callum Gare"/><br /><sub><b>Callum Gare</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=callumgare" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
