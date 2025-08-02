@@ -648,6 +648,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "devnull",
+      "name": "Mike Bentzen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56172?v=4",
+      "profile": "https://github.com/devnull",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
