@@ -594,6 +594,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Loccy",
+      "name": "Loccy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/120780?v=4",
+      "profile": "https://github.com/Loccy",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
