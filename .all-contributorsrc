@@ -585,6 +585,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "josegonzalez",
+      "name": "Jose Diaz-Gonzalez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/65675?v=4",
+      "profile": "https://github.com/josegonzalez",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
