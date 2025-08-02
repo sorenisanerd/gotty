@@ -630,6 +630,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "benoittgt",
+      "name": "Benoit Tigeot",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8417720?v=4",
+      "profile": "https://github.com/benoittgt",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7
