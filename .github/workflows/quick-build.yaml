@@ -17,11 +17,14 @@ jobs:
 
     - name: Set up Go
       uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
 
     - name: "Build"
       run: "touch bindata/* bindata/*/* ; make"
 
     - name: Upload linux/amd64 artifact
+      if: ${{ !env.ACT }}
       uses: actions/upload-artifact@v4
       with:
         name: gotty-linux-amd64

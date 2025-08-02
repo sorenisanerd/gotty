@@ -15,9 +15,11 @@ jobs:
       with:
         fetch-depth: 0
     - uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
     - uses: actions/setup-node@v3
       with:
-        node-version: 16
+        node-version: 22
     - run: "make clean"
     - run: "make assets"
     - name: "Make sure gotty.js bundle is up-to-date"
@@ -34,11 +36,14 @@ jobs:
 
     - name: Set up Go
       uses: actions/setup-go@v5
+      with:
+        go-version-file: go.mod
 
     - name: "Build & test"
       run: "make tools test cross_compile"
 
     - name: Upload artifacts
+      if: ${{ !env.ACT }}
       uses: actions/upload-artifact@v4
       with:
         name: binaries
