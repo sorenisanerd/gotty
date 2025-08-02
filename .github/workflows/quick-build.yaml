@@ -24,7 +24,7 @@ jobs:
       run: "touch bindata/* bindata/*/* ; make"
 
     - name: Upload linux/amd64 artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: gotty-linux-amd64
         path: gotty

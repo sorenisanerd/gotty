@@ -43,7 +43,7 @@ jobs:
       run: "make tools test cross_compile"
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binaries
         path: builds/pkg/*/gotty

@@ -25,7 +25,7 @@ jobs:
       run: "make tools test release-artifacts"
 
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: binaries
         path: builds/pkg/*/gotty
