@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-58-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-59-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -268,6 +268,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yann-Qiu"><img src="https://avatars.githubusercontent.com/u/56961747?v=4?s=100" width="100px;" alt="Yanfeng Qiu"/><br /><sub><b>Yanfeng Qiu</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3AYann-Qiu" title="Bug reports">🐛</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/0xcanary"><img src="https://avatars.githubusercontent.com/u/129939236?v=4?s=100" width="100px;" alt="0xcanary"/><br /><sub><b>0xcanary</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3A0xcanary" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/alirezafarnoosh"><img src="https://avatars.githubusercontent.com/u/47647930?v=4?s=100" width="100px;" alt="alirezafarnoosh"/><br /><sub><b>alirezafarnoosh</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3Aalirezafarnoosh" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>
