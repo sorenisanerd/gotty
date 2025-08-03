@@ -11,7 +11,6 @@ if (process.env.DEV === '1') {
 }
 
 module.exports = {
-    entry: "./src/main.ts",
     entry: {
         "gotty": "./src/main.ts",
     },
@@ -52,6 +51,10 @@ module.exports = {
     },
     optimization: {
         minimize: true,
-        minimizer: [new TerserPlugin()],
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                ecma: "2016"
+            }
+        })],
     },
 };

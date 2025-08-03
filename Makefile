@@ -35,16 +35,16 @@ all: gotty
 bindata/static bindata/static/css bindata/static/js:
 	mkdir -p $@
 
-bindata/static/%: resources/% | bindata/static/css 
+bindata/static/%: resources/% | bindata/static/css
 	cp "$<" "$@"
 
-bindata/static/css/%.css: resources/%.css | bindata/static 
+bindata/static/css/%.css: resources/%.css | bindata/static
 	cp "$<" "$@"
 
-bindata/static/css/xterm.css: js/node_modules/xterm/css/xterm.css | bindata/static
+bindata/static/css/xterm.css: js/node_modules/@xterm/xterm/css/xterm.css | bindata/static
 	cp "$<" "$@"
 
-js/node_modules/xterm/dist/xterm.css:
+js/node_modules/@xterm/xterm/dist/xterm.css:
 	cd js && \
 	npm install
 
