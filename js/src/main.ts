@@ -1,6 +1,6 @@
 import { ConnectionFactory } from "./websocket";
 import { Terminal, WebTTY, protocols } from "./webtty";
-import { OurXterm } from "./xterm";
+import { GoTTYXterm } from "./xterm";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
@@ -11,7 +11,7 @@ const elem = document.getElementById("terminal")
 
 if (elem !== null) {
     var term: Terminal;
-    term = new OurXterm(elem);
+    term = new GoTTYXterm(elem);
 
     const httpsEnabled = window.location.protocol == "https:";
     const queryArgs = (gotty_ws_query_args === "") ? "" : "?" + gotty_ws_query_args;
