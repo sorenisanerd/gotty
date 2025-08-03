@@ -57,6 +57,7 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
    --port value, -p value        Port number to liten (default: "8080") [$GOTTY_PORT]
    --path value, -m value        Base path (default: "/") [$GOTTY_PATH]
    --permit-write, -w            Permit clients to write to the TTY (BE CAREFUL) (default: false) [$GOTTY_PERMIT_WRITE]
+   --write-log                   Log user's writes in the TTY (default: false) [$GOTTY_WRITE_LOG]
    --credential value, -c value  Credential for Basic Authentication (ex: user:pass, default disabled) [$GOTTY_CREDENTIAL]
    --random-url, -r              Add a random string to the URL (default: false) [$GOTTY_RANDOM_URL]
    --random-url-length value     Random URL length (default: 8) [$GOTTY_RANDOM_URL_LENGTH]
@@ -153,6 +154,37 @@ When you want to create a jailed environment for each client, you can use Docker
 ```sh
 $ gotty -w docker run -it --rm busybox
 ```
+
+## Write log
+
+If you set `--write-log` option, user's writes in the TTY can be Logged. for example:
+
+if you run gotty like this:
+
+```shell
+./gotty -w --write-log --permit-arguments ./test.sh
+```
+
+this is `test.sh`:
+
+```sh
+#!/bin/bash
+
+echo "Welcome: $4"
+kubectl -n $1 exec -it $2 -c $3 -- sh
+```
+
+visit `http://127.0.0.1:8080/?arg=without-istio&arg=sleep-7b6d569576-57sjq&arg=sleep&arg=21001713` and input your commands in shell, and you will see user's writes in the log (operation logs):
+
+```
+...
+2022/12/13 13:36:46 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] ls[CR]
+2022/12/13 13:37:25 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] echo[SPACE]hello[SPACE]world;[CR]
+2022/12/13 13:47:00 [write-log] map[arg:[without-istio sleep-7b6d569576-8nz7t sleep 21001713]] [CUU][CR]
+...
+```
+
+Using the `[write-log]` flag, you can collect and store these logs persistently. All args are in the log, including the userID. 
 
 ## Development
 

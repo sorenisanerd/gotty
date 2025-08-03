@@ -17,6 +17,14 @@ func WithPermitWrite() Option {
 	}
 }
 
+// WithWriteLog sets a WebTTY to log user's writes in the TTY.
+func WithWriteLog() Option {
+	return func(wt *WebTTY) error {
+		wt.writeLog = true
+		return nil
+	}
+}
+
 // WithFixedColumns sets a fixed width to TTY master.
 func WithFixedColumns(columns int) Option {
 	return func(wt *WebTTY) error {
@@ -37,6 +45,14 @@ func WithFixedRows(rows int) Option {
 func WithWindowTitle(windowTitle []byte) Option {
 	return func(wt *WebTTY) error {
 		wt.windowTitle = windowTitle
+		return nil
+	}
+}
+
+// WithArguments sets the command line arguments that clients send
+func WithArguments(arguments map[string][]string) Option {
+	return func(wt *WebTTY) error {
+		wt.arguments = arguments
 		return nil
 	}
 }
