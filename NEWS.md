@@ -1,4 +1,4 @@
-##  v1.5.1 (2025-08-02)
+##  v1.6.0 (2025-08-02)
 
 * Add Docker build. Thanks, @callumgare!
 * Add a workflow to check embedded bundle is up-to-date.
