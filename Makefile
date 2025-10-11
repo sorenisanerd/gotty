@@ -50,7 +50,8 @@ js/node_modules/@xterm/xterm/dist/xterm.css:
 
 bindata/static/js/gotty.js.map bindata/static/js/gotty.js: js/src/* | js/node_modules/webpack
 	cd js && \
-    patch -p1 -d node_modules/zmodem.js < zmodem.js-npm-0.1.10-e5537fa2ed.patch && \
+	npm install && \
+	patch -p1 --forward -s -d node_modules/zmodem.js < zmodem.js-npm-0.1.10-e5537fa2ed.patch || : && \
 	npx webpack --mode=$(WEBPACK_MODE)
 
 js/node_modules/webpack:
