@@ -4,7 +4,7 @@ import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
 import { ZModemAddon } from "./zmodem";
 
-export class GoTTYXterm {
+export class OurXterm {
     // The HTMLElement that contains our terminal
     elem: HTMLElement;
 
