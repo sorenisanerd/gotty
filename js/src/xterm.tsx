@@ -1,4 +1,5 @@
 import { IDisposable, Terminal } from "@xterm/xterm";
+import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
@@ -27,7 +28,14 @@ export class GoTTYXterm {
 
     constructor(elem: HTMLElement) {
         this.elem = elem;
-        this.term = new Terminal();
+        this.term = new Terminal({
+            allowProposedApi: true,
+        });
+
+        const unicode11Addon = new Unicode11Addon();
+        this.term.loadAddon(unicode11Addon);
+        this.term.unicode.activeVersion = '11';
+
         this.fitAddOn = new FitAddon();
         this.zmodemAddon = new ZModemAddon({
             toTerminal: (x: Uint8Array) => this.term.write(x),
