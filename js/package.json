@@ -27,7 +27,7 @@
         "@xterm/xterm": "^5.5.0",
         "bootstrap": "^5.3.7",
         "debounce": "^2.2.0",
-        "preact": "^10.27.0",
+        "preact": "^10.27.3",
         "react-bootstrap": "^2.10.10",
         "zmodem.js": "^0.1.10"
     }
