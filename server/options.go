@@ -35,6 +35,12 @@ type Options struct {
 	Quiet               bool   `hcl:"quiet" flagName:"quiet" flagDescribe:"Don't log" default:"false"`
 
 	TitleVariables map[string]interface{}
+
+	// Notify with RemoteAddr when client disconnects (optional)
+	ClientGoneCh chan<- string
+
+	// Rewrite the index template (optional)
+	IndexRewrite func(string) string
 }
 
 func (options *Options) Validate() error {
