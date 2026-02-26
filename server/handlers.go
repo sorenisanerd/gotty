@@ -87,6 +87,9 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 			closeReason = server.factory.Name()
 		case webtty.ErrMasterClosed:
 			closeReason = "client"
+			if server.clientGoneCh != nil {
+				server.clientGoneCh <- r.RemoteAddr
+			}
 		default:
 			closeReason = fmt.Sprintf("an error: %s", err)
 		}
@@ -196,6 +199,9 @@ func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, h
 	}
 
 	err = tty.Run(ctx)
+	if err == webtty.ErrMasterClosed {
+		_ = slave.Close()
+	}
 
 	return err
 }

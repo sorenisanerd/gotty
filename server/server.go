@@ -27,8 +27,9 @@ import (
 
 // Server provides a webtty HTTP endpoint.
 type Server struct {
-	factory Factory
-	options *Options
+	factory      Factory
+	options      *Options
+	clientGoneCh chan<- string
 
 	upgrader         *websocket.Upgrader
 	indexTemplate    *template.Template
@@ -50,6 +51,9 @@ func New(factory Factory, options *Options) (*Server, error) {
 			return nil, errors.Wrapf(err, "failed to read custom index file at `%s`", path)
 		}
 	}
+	if options.IndexRewrite != nil {
+		indexData = []byte(options.IndexRewrite(string(indexData)))
+	}
 	indexTemplate, err := template.New("index").Parse(string(indexData))
 	if err != nil {
 		panic("index template parse failed") // must be valid
@@ -69,26 +73,27 @@ func New(factory Factory, options *Options) (*Server, error) {
 		return nil, errors.Wrapf(err, "failed to parse window title format `%s`", options.TitleFormat)
 	}
 
-	var originChekcer func(r *http.Request) bool
+	var originChecker func(r *http.Request) bool
 	if options.WSOrigin != "" {
 		matcher, err := regexp.Compile(options.WSOrigin)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to compile regular expression of Websocket Origin: %s", options.WSOrigin)
 		}
-		originChekcer = func(r *http.Request) bool {
+		originChecker = func(r *http.Request) bool {
 			return matcher.MatchString(r.Header.Get("Origin"))
 		}
 	}
 
 	return &Server{
-		factory: factory,
-		options: options,
+		factory:      factory,
+		options:      options,
+		clientGoneCh: options.ClientGoneCh,
 
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
 			WriteBufferSize: 1024,
 			Subprotocols:    webtty.Protocols,
-			CheckOrigin:     originChekcer,
+			CheckOrigin:     originChecker,
 		},
 		indexTemplate:    indexTemplate,
 		titleTemplate:    titleTemplate,

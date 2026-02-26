@@ -36,6 +36,12 @@ type Options struct {
 
 	TitleVariables map[string]interface{}
 
+	// Notify with RemoteAddr when client disconnects (optional)
+	ClientGoneCh chan<- string
+
+	// Rewrite the index template (optional)
+	IndexRewrite func(string) string
+
 	// Favicon specifies a custom favicon. Accepts a local file path (e.g.
 	// "/path/to/favicon.png"), an HTTP(S) URL, or a base64 data URI.
 	// A local file path is read at startup, converted to an inline data URI,
