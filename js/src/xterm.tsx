@@ -27,7 +27,10 @@ export class GoTTYXterm {
 
     constructor(elem: HTMLElement) {
         this.elem = elem;
-        this.term = new Terminal();
+        this.term = new Terminal({
+            customGlyphs: true,
+            rescaleOverlappingGlyphs: true,
+        });
         this.fitAddOn = new FitAddon();
         this.zmodemAddon = new ZModemAddon({
             toTerminal: (x: Uint8Array) => this.term.write(x),
@@ -48,6 +51,13 @@ export class GoTTYXterm {
         };
 
         this.term.open(elem);
+
+        try {
+            this.term.loadAddon(new WebglAddon());
+        } catch (e) {
+            console.warn("WebGL renderer failed to load, using canvas fallback", e);
+        }
+
         this.term.focus();
         this.resizeListener();
 
@@ -100,15 +110,25 @@ export class GoTTYXterm {
     };
 
     setPreferences(value: object) {
-        Object.keys(value).forEach((key) => {
-            if (key == "EnableWebGL" && key) {
-                this.term.loadAddon(new WebglAddon());
+        // Apply font settings before loading WebGL so the renderer
+        // initializes with the correct font metrics.
+        const keys = Object.keys(value);
+        const fontKeys = keys.filter(k => k === "font-family" || k === "font-size");
+        const otherKeys = keys.filter(k => k !== "font-family" && k !== "font-size");
+
+        for (const key of [...fontKeys, ...otherKeys]) {
+            if (key == "font-family") {
+                this.term.options.fontFamily = value[key];
             } else if (key == "font-size") {
-                this.term.options.fontSize = value[key]
-            } else if (key == "font-family") {
-                this.term.options.fontFamily = value[key]
+                this.term.options.fontSize = value[key];
+            } else if (key == "EnableWebGL") {
+                try {
+                    this.term.loadAddon(new WebglAddon());
+                } catch (e) {
+                    console.warn("WebGL renderer failed to load", e);
+                }
             }
-        });
+        }
     };
 
     sendInput(data: Uint8Array) {
