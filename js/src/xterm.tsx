@@ -101,12 +101,30 @@ export class GoTTYXterm {
 
     setPreferences(value: object) {
         Object.keys(value).forEach((key) => {
-            if (key == "EnableWebGL" && key) {
-                this.term.loadAddon(new WebglAddon());
-            } else if (key == "font-size") {
-                this.term.options.fontSize = value[key]
-            } else if (key == "font-family") {
-                this.term.options.fontFamily = value[key]
+            switch (key) {
+                case "EnableWebGL":
+                    if (value[key]) {
+                        this.term.loadAddon(new WebglAddon());
+                    }
+                    break;
+                case "font-size":
+                    this.term.options.fontSize = value[key] as number;
+                    break;
+                case "font-family":
+                    this.term.options.fontFamily = value[key] as string;
+                    break;
+                case "cursor-blink":
+                    this.term.options.cursorBlink = value[key] as boolean;
+                    break;
+                case "cursor-style":
+                    this.term.options.cursorStyle = value[key] as "block" | "underline" | "bar";
+                    break;
+                case "scrollback-lines":
+                    this.term.options.scrollback = value[key] as number;
+                    break;
+                case "theme":
+                    this.term.options.theme = value[key] as object;
+                    break;
             }
         });
     };
