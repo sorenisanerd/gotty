@@ -56,4 +56,11 @@ export class Connection {
             callback();
         };
     };
+
+    onError(callback: () => void) {
+        this.bare.onerror = (event) => {
+            console.error("WebSocket error:", event);
+            callback();
+        };
+    };
 }

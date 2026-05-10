@@ -98,9 +98,26 @@ func (lcmd *LocalCommand) Close() error {
 		case <-lcmd.ptyClosed:
 			return nil
 		case <-lcmd.closeTimeoutC():
-			lcmd.cmd.Process.Signal(syscall.SIGKILL)
+			if lcmd.cmd != nil && lcmd.cmd.Process != nil {
+				lcmd.cmd.Process.Signal(syscall.SIGKILL)
+			}
+		case <-time.After(30 * time.Second):
+			if lcmd.cmd != nil && lcmd.cmd.Process != nil {
+				lcmd.cmd.Process.Signal(syscall.SIGKILL)
+			}
+			return errors.New("timed out waiting for command to exit")
 		}
 	}
+}
+
+func (lcmd *LocalCommand) closeTimeoutC() <-chan time.Time {
+	if lcmd.closeTimeout >= 0 {
+		return time.After(lcmd.closeTimeout)
+	}
+
+	// closeTimeout < 0 means no graceful shutdown timeout — return a channel
+	// that fires immediately so Close() goes straight to SIGKILL.
+	return time.After(0)
 }
 
 func (lcmd *LocalCommand) WindowTitleVariables() map[string]interface{} {
@@ -124,12 +141,4 @@ func (lcmd *LocalCommand) ResizeTerminal(width int, height int) error {
 	} else {
 		return nil
 	}
-}
-
-func (lcmd *LocalCommand) closeTimeoutC() <-chan time.Time {
-	if lcmd.closeTimeout >= 0 {
-		return time.After(lcmd.closeTimeout)
-	}
-
-	return make(chan time.Time)
 }

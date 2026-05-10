@@ -16,10 +16,12 @@ type counter struct {
 func newCounter(duration time.Duration) *counter {
 	zeroTimer := time.NewTimer(duration)
 
-	// when duration is 0, drain the expire event here
-	// so that user will never get the event.
+	// when duration is 0, stop the timer and drain the channel so
+	// it never fires and the goroutine in Run() won't spuriously cancel.
 	if duration == 0 {
-		<-zeroTimer.C
+		if !zeroTimer.Stop() {
+			<-zeroTimer.C
+		}
 	}
 
 	return &counter{

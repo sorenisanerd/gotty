@@ -41,7 +41,8 @@ module.exports = {
                     loader: "sass-loader",
                     options: {
                         sassOptions: {
-                            includePaths: ["node_modules/bootstrap/scss"]
+                            loadPaths: ["node_modules/bootstrap/scss"],
+                            silenceDeprecations: ["import"]
                         }
                     }
                 }

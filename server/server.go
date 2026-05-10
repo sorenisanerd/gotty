@@ -2,8 +2,10 @@ package server
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/hex"
 	"html/template"
 	"io/fs"
 	"log"
@@ -29,6 +31,7 @@ import (
 type Server struct {
 	factory Factory
 	options *Options
+	wsToken string
 
 	upgrader         *websocket.Upgrader
 	indexTemplate    *template.Template
@@ -80,9 +83,21 @@ func New(factory Factory, options *Options) (*Server, error) {
 		}
 	}
 
+	// Generate a separate WebSocket auth token so the credential/password
+	// is never sent to the browser as a JS variable.
+	wsToken := options.Credential
+	if options.Credential != "" {
+		token, err := generateWSToken(32)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to generate WebSocket auth token")
+		}
+		wsToken = token
+	}
+
 	return &Server{
 		factory: factory,
 		options: options,
+		wsToken: wsToken,
 
 		upgrader: &websocket.Upgrader{
 			ReadBufferSize:  1024,
@@ -266,4 +281,13 @@ func (server *Server) tlsConfig() (*tls.Config, error) {
 		ClientAuth: tls.RequireAndVerifyClientCert,
 	}
 	return tlsConfig, nil
+}
+
+// generateWSToken returns a cryptographically random hex string of the given byte length.
+func generateWSToken(byteLen int) (string, error) {
+	b := make([]byte, byteLen)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
 }

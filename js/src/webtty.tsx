@@ -80,6 +80,7 @@ export interface Connection {
     onOpen(callback: () => void): void;
     onReceive(callback: (data: string) => void): void;
     onClose(callback: () => void): void;
+    onError(callback: () => void): void;
 }
 
 export interface ConnectionFactory {
@@ -170,7 +171,11 @@ export class WebTTY {
                 const payload = data.slice(1);
                 switch (data[0]) {
                     case msgOutput:
-                        this.term.output(Uint8Array.from(atob(payload), c => c.charCodeAt(0)));
+                        try {
+                            this.term.output(Uint8Array.from(atob(payload), c => c.charCodeAt(0)));
+                        } catch (e) {
+                            console.error("Failed to decode terminal output", e);
+                        }
                         break;
                     case msgPong:
                         break;
@@ -198,12 +203,22 @@ export class WebTTY {
                 this.term.deactivate();
                 this.term.showMessage("Connection Closed", 0);
                 if (this.reconnect > 0) {
+                    // Exponential backoff on reconnect: double each attempt, cap at 60s
+                    const origReconnect = this.reconnect;
+                    const attemptDelay = Math.min(origReconnect, 60);
+                    this.reconnect = Math.min(origReconnect * 2, 60);
                     reconnectTimeout = setTimeout(() => {
                         connection = this.connectionFactory.create();
                         this.term.reset();
                         setup();
-                    }, this.reconnect * 1000);
+                    }, attemptDelay * 1000);
                 }
+            });
+
+            connection.onError(() => {
+                // onerror delegates to onclose, but in case it doesn't,
+                // trigger a close ourselves
+                this.connection.close();
             });
 
             connection.open();

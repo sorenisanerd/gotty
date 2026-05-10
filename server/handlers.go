@@ -106,7 +106,7 @@ func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, h
 	if err != nil {
 		return errors.Wrapf(err, "failed to authenticate websocket connection")
 	}
-	if init.AuthToken != server.options.Credential {
+	if init.AuthToken != server.wsToken {
 		return errors.New("failed to authenticate websocket connection")
 	}
 
@@ -228,15 +228,16 @@ func (server *Server) indexVariables(r *http.Request) (map[string]interface{}, e
 
 func (server *Server) handleAuthToken(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
-	// @TODO hashing?
-	w.Write([]byte("var gotty_auth_token = '" + server.options.Credential + "';"))
+	safeToken, _ := json.Marshal(server.wsToken)
+	w.Write([]byte("var gotty_auth_token = " + string(safeToken) + ";\n"))
 }
 
 func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
+	safeQueryArgs, _ := json.Marshal(server.options.WSQueryArgs)
 	lines := []string{
 		"var gotty_term = 'xterm';",
-		"var gotty_ws_query_args = '" + server.options.WSQueryArgs + "';",
+		"var gotty_ws_query_args = " + string(safeQueryArgs) + ";",
 	}
 
 	w.Write([]byte(strings.Join(lines, "\n")))
