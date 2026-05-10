@@ -1,6 +1,7 @@
 import { ConnectionFactory } from "./websocket";
-import { Terminal, WebTTY, protocols } from "./webtty";
+import { WebTTY, protocols } from "./webtty";
 import { GoTTYXterm } from "./xterm";
+import { initThemePicker } from "./theme-picker";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
@@ -10,8 +11,9 @@ declare var gotty_ws_query_args: string;
 const elem = document.getElementById("terminal")
 
 if (elem !== null) {
-    var term: Terminal;
+    var term: GoTTYXterm;
     term = new GoTTYXterm(elem);
+    initThemePicker(term.term);
 
     const httpsEnabled = window.location.protocol == "https:";
     const queryArgs = (gotty_ws_query_args === "") ? "" : "?" + gotty_ws_query_args;

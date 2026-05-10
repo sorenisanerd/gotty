@@ -35,6 +35,30 @@ type Options struct {
 	Quiet               bool   `hcl:"quiet" flagName:"quiet" flagDescribe:"Don't log" default:"false"`
 
 	TitleVariables map[string]interface{}
+
+	// Terminal preferences — font, colors, cursor, theme, and palette.
+	// These are sent to the browser on each WebSocket connection.
+	// Users set them in the config file inside a `preferences { ... }` block.
+	Preferences *Preferences `hcl:"preferences"`
+}
+
+// Preferences holds terminal color/font/cursor settings.
+// All fields are optional; nil-pointer fields are omitted when sent to the browser.
+// Users set these in their .gotty config under a `preferences` block.
+type Preferences struct {
+	Theme                 string   `hcl:"theme"`
+	FontSize              int      `hcl:"font_size"`
+	FontFamily            string   `hcl:"font_family"`
+	ForegroundColor       string   `hcl:"foreground_color"`
+	BackgroundColor       string   `hcl:"background_color"`
+	CursorColor           string   `hcl:"cursor_color"`
+	CursorAccent          string   `hcl:"cursor_accent"`
+	SelectionColor        string   `hcl:"selection_color"`
+	CursorStyle           string   `hcl:"cursor_style"`
+	CursorBlink           bool     `hcl:"cursor_blink"`
+	ScrollbackLines       int      `hcl:"scrollback_lines"`
+	EnableWebGL           bool     `hcl:"enable_webgl"`
+	ColorPaletteOverrides []string `hcl:"color_palette_overrides"`
 }
 
 func (options *Options) Validate() error {
