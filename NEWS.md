@@ -1,3 +1,13 @@
+##  v1.7.0 (unreleased)
+
+* Add runtime display picker — floating 🎨 button for live theme switching, font size adjustment, and font family selection, all persisted to localStorage.
+* Add 6 built-in color themes: Catppuccin Mocha (default), Nord, Dracula, Solarized Dark, Monokai, Light — configurable via `preferences { theme = "name" }`.
+* Add font size picker with preset buttons (10–24 px) and config support via `preferences { font_size = N }`.
+* Add font family picker with 8 monospace fonts and in-font preview, configurable via `preferences { font_family = "...' }`.
+* Add color palette overrides via `preferences { color_palette_overrides = [...] }`.
+* Add cursor style (`block`/`underline`/`bar`), cursor blink, and scrollback lines to preferences.
+* Add Display Customization section to README documenting all new features.
+
 ##  v1.6.0 (2025-08-02)
 
 * Add Docker build. Thanks, @callumgare!

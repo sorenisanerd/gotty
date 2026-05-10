@@ -99,6 +99,104 @@ enable_tls = true
 
 See the [`.gotty`](https://github.com/sorenisanerd/gotty/blob/master/.gotty) file in this repository for the list of configuration options.
 
+### Display Customization
+
+GoTTY lets you customize the look of your terminal session — themes, fonts,
+cursor style, and more — through two channels: a **config file** for
+server-side defaults, and an on-screen **runtime picker** for live tweaking
+that persists to your browser's localStorage.
+
+#### Themes
+
+GoTTY ships with 6 built-in color themes:
+
+| Theme | Description |
+|-------|-------------|
+| `default` | Catppuccin Mocha — warm, high-contrast |
+| `nord` | Arctic bluish-cold palette |
+| `dracula` | Dark purple-based high-contrast |
+| `solarized-dark` | Classic solarized dark |
+| `monokai` | High-contrast vivid theme |
+| `light` | Clean light theme |
+
+Set a theme in your config:
+
+```hcl
+preferences {
+    theme = "dracula"
+}
+```
+
+You can also override individual colors on top of any theme:
+
+```hcl
+preferences {
+    theme = "nord"
+    foreground_color = "#ffffff"
+    background_color = "#1a1a2e"
+    cursor_color = "#e94560"
+}
+```
+
+And override entries in the 16-color ANSI palette (ordered: black, red, green, yellow, blue, magenta, cyan, white, brightBlack, brightRed, brightGreen, brightYellow, brightBlue, brightMagenta, brightCyan, brightWhite):
+
+```hcl
+preferences {
+    color_palette_overrides = ["", "", "#00ff00"]
+}
+```
+
+Leave entries empty (`""`) to keep the theme's default.
+
+#### Font Size
+
+Set the terminal font size in pixels (8–48):
+
+```hcl
+preferences {
+    font_size = 16
+}
+```
+
+#### Font Family
+
+Choose a monospace font family:
+
+```hcl
+preferences {
+    font_family = "'JetBrains Mono', monospace"
+}
+```
+
+The runtime picker makes these fonts available: DejaVu Sans Mono,
+JetBrains Mono, Fira Code, Source Code Pro, Monaco, Menlo,
+Cascadia Code, and the system default monospace. Each option in the
+picker renders its name in its own typeface as a live preview.
+
+#### Cursor & Scrollback
+
+```hcl
+preferences {
+    cursor_style = "bar"       // "block" (default), "underline", or "bar"
+    cursor_blink = true
+    scrollback_lines = 5000
+    enable_webgl = true        // enabled by default
+}
+```
+
+#### Runtime Picker (🎨 button)
+
+When you open a GoTTY session, a small 🎨 button appears in the
+bottom-right corner. Click it to open a floating settings panel where
+you can switch themes, adjust font size, and change font family on the
+fly. All your choices are saved to `localStorage` and restored
+automatically on your next visit. The panel stays open while you tweak
+multiple settings and closes when you click outside it.
+
+> **Note**: Runtime picker settings override config defaults for your
+> current browser. Config preferences are re-applied on fresh connections
+> (new browser, cleared storage, incognito mode).
+
 ### Security Options
 
 By default, GoTTY doesn't allow clients to send any keystrokes or commands except terminal window resizing. When you want to permit clients to write input to the TTY, add the `-w` option. However, accepting input from remote clients is dangerous for most commands. When you need interaction with the TTY for some reasons, consider starting GoTTY with tmux or GNU Screen and run your command on it (see "Sharing with Multiple Clients" section for detail).
