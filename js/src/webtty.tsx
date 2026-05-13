@@ -49,13 +49,13 @@ export interface Terminal {
     /*
      * Set preferences. TODO: Add typings
      */
-    setPreferences(value: object): void;
+    setPreferences(value: Record<string, unknown>): void;
 
 
     /*
      * Sets an input (e.g. user types something) handler
      */
-    onInput(callback: (input: string) => void): void;
+    onInput(callback: (input: string | Uint8Array) => void): void;
 
     /*
      * Sets a resize handler
@@ -100,7 +100,7 @@ export class WebTTY {
      * in instead of just a connection so that we can reconnect.
      */
     connectionFactory: ConnectionFactory;
-    connection: Connection;
+    connection!: Connection;
 
     /*
      * Arguments passed in by the user. We forward them to the backend
@@ -216,7 +216,7 @@ export class WebTTY {
         }
     };
 
-    private initializeConnection(args, authToken) {
+    private initializeConnection(args: string, authToken: string) {
         this.connection.send(JSON.stringify(
             {
                 Arguments: args,

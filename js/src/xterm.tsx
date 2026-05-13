@@ -15,15 +15,15 @@ export class GoTTYXterm {
 
     message: HTMLElement;
     messageTimeout: number;
-    messageTimer: NodeJS.Timeout;
+    messageTimer!: NodeJS.Timeout;
 
-    onResizeHandler: IDisposable;
-    onDataHandler: IDisposable;
+    onResizeHandler!: IDisposable;
+    onDataHandler!: IDisposable;
 
     fitAddOn: FitAddon;
     zmodemAddon: ZModemAddon;
-    toServer: (data: string | Uint8Array) => void;
-    encoder: TextEncoder
+    toServer!: (data: string | Uint8Array) => void;
+    encoder!: TextEncoder
 
     constructor(elem: HTMLElement) {
         this.elem = elem;
@@ -99,7 +99,7 @@ export class GoTTYXterm {
         document.title = title;
     };
 
-    setPreferences(value: object) {
+    setPreferences(value: Record<string, unknown>) {
         Object.keys(value).forEach((key) => {
             switch (key) {
                 case "EnableWebGL":
@@ -133,7 +133,7 @@ export class GoTTYXterm {
         return this.toServer(data)
     }
 
-    onInput(callback: (input: string) => void) {
+    onInput(callback: (input: string | Uint8Array) => void) {
         this.encoder = new TextEncoder()
         this.toServer = callback;
 

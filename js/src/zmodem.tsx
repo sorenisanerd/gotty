@@ -4,9 +4,9 @@ import { Browser, Detection, Offer, Sentry, Session } from "zmodem.js";
 import { Button, MyModal } from "./MyModal";
 
 export class ZModemAddon implements ITerminalAddon {
-    term: Terminal;
-    elem: HTMLDivElement;
-    sentry: Sentry;
+    term!: Terminal;
+    elem!: HTMLDivElement;
+    sentry!: Sentry;
 
     toTerminal: (data: Uint8Array) => void;
     toServer: (data: Uint8Array) => void;
@@ -107,7 +107,7 @@ interface ReceiveFileModalState {
 }
 
 export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFileModalState> {
-    constructor(props) {
+    constructor(props: ReceiveFileModalProps) {
         super(props)
         this.setState({ state: "notstarted" })
     }
