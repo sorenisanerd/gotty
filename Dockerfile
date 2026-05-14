@@ -4,7 +4,7 @@ COPY js /gotty/js
 COPY Makefile /gotty/
 RUN make bindata/static/js/gotty.js.map
 
-FROM golang:1.23 as go-build
+FROM golang:1.25 as go-build
 WORKDIR /gotty
 COPY . /gotty
 COPY --from=js-build /gotty/js/node_modules /gotty/js/node_modules
