@@ -53,7 +53,7 @@ func main() {
 		if c.NArg() == 0 {
 			msg := "Error: No command given."
 			cli.ShowAppHelp(c)
-			exit(fmt.Errorf(msg), 1)
+			exit(fmt.Errorf("%s", msg), 1)
 		}
 
 		configFile := c.String("config")
