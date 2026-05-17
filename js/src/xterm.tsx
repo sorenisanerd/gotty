@@ -2,6 +2,7 @@ import { IDisposable, Terminal } from "@xterm/xterm";
 import { FitAddon } from '@xterm/addon-fit';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { WebglAddon } from '@xterm/addon-webgl';
+import { ImageAddon } from '@xterm/addon-image';
 import { ZModemAddon } from "./zmodem";
 
 export class GoTTYXterm {
@@ -35,6 +36,7 @@ export class GoTTYXterm {
         });
         this.term.loadAddon(new WebLinksAddon());
         this.term.loadAddon(this.fitAddOn);
+        this.term.loadAddon(new ImageAddon());
         this.term.loadAddon(this.zmodemAddon);
 
         this.message = elem.ownerDocument.createElement("div");
