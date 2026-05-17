@@ -25,9 +25,10 @@ export class GoTTYXterm {
     toServer!: (data: string | Uint8Array) => void;
     encoder!: TextEncoder
 
-    constructor(elem: HTMLElement) {
+    constructor(elem: HTMLElement, preferences: Record<string, unknown> = {}) {
         this.elem = elem;
         this.term = new Terminal();
+        this.setPreferences(preferences);
         this.fitAddOn = new FitAddon();
         this.zmodemAddon = new ZModemAddon({
             toTerminal: (x: Uint8Array) => this.term.write(x),

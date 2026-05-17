@@ -238,9 +238,16 @@ func (server *Server) handleAuthToken(w http.ResponseWriter, r *http.Request) {
 
 func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript")
+	preferences, err := json.Marshal(server.buildPreferences())
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
 	lines := []string{
 		"var gotty_term = 'xterm';",
 		"var gotty_ws_query_args = '" + server.options.WSQueryArgs + "';",
+		"var gotty_preferences = " + string(preferences) + ";",
 	}
 
 	w.Write([]byte(strings.Join(lines, "\n")))

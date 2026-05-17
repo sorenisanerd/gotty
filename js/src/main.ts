@@ -7,12 +7,13 @@ import { initThemePicker } from "./theme-picker";
 declare var gotty_auth_token: string;
 declare var gotty_term: string;
 declare var gotty_ws_query_args: string;
+declare var gotty_preferences: Record<string, unknown>;
 
 const elem = document.getElementById("terminal")
 
 if (elem !== null) {
     var term: GoTTYXterm;
-    term = new GoTTYXterm(elem);
+    term = new GoTTYXterm(elem, gotty_preferences);
     initThemePicker(term.term);
 
     const httpsEnabled = window.location.protocol == "https:";
