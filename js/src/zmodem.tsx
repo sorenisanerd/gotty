@@ -28,7 +28,12 @@ export class ZModemAddon implements ITerminalAddon {
     }
 
     consume(data: Uint8Array) {
-        this.sentry.consume(data)
+        try {
+            this.sentry.consume(data)
+        } catch (e) {
+            console.warn("ZModem protocol error:", e);
+            this.reset();
+        }
     }
 
     activate(terminal: Terminal): void {
