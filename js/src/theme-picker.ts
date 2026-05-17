@@ -265,7 +265,7 @@ export function initThemePicker(term?: Terminal): void {
     const panel = document.createElement("div");
     panel.className = "panel";
 
-    let activeThemeName = localStorage.getItem(STORAGE_THEME) || "";
+    let activeThemeName = localStorage.getItem(STORAGE_THEME) || "default";
     let activeFontSize = localStorage.getItem(STORAGE_FONT_SIZE) || "";
     let activeFontFamily = localStorage.getItem(STORAGE_FONT_FAMILY) || "";
 
