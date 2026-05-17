@@ -36,10 +36,24 @@ type Options struct {
 
 	TitleVariables map[string]interface{}
 
+	// Favicon specifies a custom favicon. Accepts a local file path (e.g.
+	// "/path/to/favicon.png"), an HTTP(S) URL, or a base64 data URI.
+	// A local file path is read at startup, converted to an inline data URI,
+	// and injected into the HTML template. Empty string (default) keeps the
+	// built-in favicon.ico / icon.svg.
+	Favicon string `hcl:"favicon" flagName:"favicon" flagDescribe:"Custom favicon (file path, URL, or data URI)" default:""`
+
 	// Terminal preferences — font, colors, cursor, theme, and palette.
 	// These are sent to the browser on each WebSocket connection.
 	// Users set them in the config file inside a `preferences { ... }` block.
 	Preferences *Preferences `hcl:"preferences"`
+
+	// PingInterval is the interval (in seconds) for WebSocket server-side ping/pong.
+	// The server sends a WebSocket Ping frame every PingInterval seconds.
+	// This keeps the connection alive through NAT/firewall idle timeouts even
+	// when the browser tab is in the background (where JS timers are throttled).
+	// Set to 0 to disable.
+	PingInterval int `hcl:"ping_interval" flagName:"ping-interval" flagSName:"" flagDescribe:"WebSocket server ping interval in seconds (0 to disable)" default:"30"`
 }
 
 // Preferences holds terminal color/font/cursor settings.
