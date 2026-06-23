@@ -93,7 +93,7 @@ export function initThemePicker(term?: Terminal): void {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s, transform 0.2s;
+    transition: background 0.2s, transform 0.2s, bottom 0.2s;
     backdrop-filter: blur(4px);
     line-height: 1;
 }
@@ -246,6 +246,15 @@ export function initThemePicker(term?: Terminal): void {
 }
 #gotty-theme-picker .font-family-item.active .font-family-check {
     visibility: visible;
+}
+/* When the on-screen keyboard is open, lift the button and its dropdown above
+   the keyboard bar (whose height is published as --gotty-vkb-h). Falls back to
+   230px if the variable is unset. */
+body.gotty-vkb-open #gotty-theme-btn {
+    bottom: calc(var(--gotty-vkb-h, 230px) + 14px);
+}
+body.gotty-vkb-open #gotty-theme-picker {
+    bottom: calc(var(--gotty-vkb-h, 230px) + 56px);
 }
 `;
 

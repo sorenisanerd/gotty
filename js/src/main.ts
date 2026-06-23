@@ -2,6 +2,7 @@ import { ConnectionFactory } from "./websocket";
 import { WebTTY, protocols } from "./webtty";
 import { GoTTYXterm } from "./xterm";
 import { initThemePicker } from "./theme-picker";
+import { initVirtualKeyboard } from "./virtual-keyboard";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
@@ -23,6 +24,7 @@ if (elem !== null) {
     const factory = new ConnectionFactory(url, protocols);
     const wt = new WebTTY(term, factory, args, gotty_auth_token);
     const closer = wt.open();
+    initVirtualKeyboard(term);
 
     // According to https://developer.mozilla.org/en-US/docs/Web/API/Window/unload_event
     // this event is unreliable and in some cases (Firefox is mentioned), having an
