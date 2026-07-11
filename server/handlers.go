@@ -3,6 +3,8 @@ package server
 import (
 	"bytes"
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -258,7 +260,7 @@ func (server *Server) indexVariables(r *http.Request) (map[string]interface{}, e
 	}
 
 	indexVars := map[string]interface{}{
-		"title": titleBuf.String(),
+		"title":   titleBuf.String(),
 		"favicon": server.options.Favicon,
 	}
 	return indexVars, err
@@ -422,4 +424,42 @@ func (server *Server) titleVariables(order []string, varUnits map[string]map[str
 	}
 
 	return titleVars
+}
+
+func (server *Server) handleTOTPAuth(pathPrefix string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		http.SetCookie(w, &http.Cookie{
+			Name:    "token",
+			Path:    pathPrefix,
+			MaxAge:  -1,
+			Expires: time.Unix(0, 0),
+		})
+
+		salt := make([]byte, 16)
+		_, err := rand.Read(salt)
+		if err != nil {
+			log.Fatalf("failed to generate salt: %v", err)
+		}
+
+		http.SetCookie(w, &http.Cookie{
+			Name:   "salt",
+			Value:  hex.EncodeToString(salt),
+			Path:   pathPrefix,
+			MaxAge: 0,
+		})
+
+		lines := []string{
+			"<body>",
+			"<script>",
+			"const passcode = prompt('Enter your TOTP passcode:');",
+			"document.cookie = 'passcode=' + passcode + '; path=" + pathPrefix + "';",
+			"location.replace('" + pathPrefix + "');",
+			"</script>",
+			"</body>",
+		}
+
+		w.Write([]byte(strings.Join(lines, "\n")))
+	}
 }

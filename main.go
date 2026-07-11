@@ -73,6 +73,10 @@ func main() {
 
 		if c.IsSet("credential") {
 			appOptions.EnableBasicAuth = true
+
+			if c.IsSet("secret") {
+				appOptions.EnableTOTPAuth = true
+			}
 		}
 		if c.IsSet("tls-ca-crt") {
 			appOptions.EnableTLSClientAuth = true

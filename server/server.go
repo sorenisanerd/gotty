@@ -259,7 +259,16 @@ func (server *Server) setupHandlers(ctx context.Context, cancel context.CancelFu
 	siteMux.HandleFunc(pathPrefix+"config.js", server.handleConfig)
 	siteMux.HandleFunc(pathPrefix+"themes.js", server.handleThemes)
 
+	if server.options.EnableTOTPAuth {
+		siteMux.HandleFunc(pathPrefix+"totp-auth", server.handleTOTPAuth(pathPrefix))
+	}
+
 	siteHandler := http.Handler(siteMux)
+
+	if server.options.EnableTOTPAuth {
+		log.Printf("Using TOTP Authentication")
+		siteHandler = server.wrapTOTPAuth(siteHandler, pathPrefix, server.options.Secret)
+	}
 
 	if server.options.EnableBasicAuth {
 		log.Printf("Using Basic Authentication")
