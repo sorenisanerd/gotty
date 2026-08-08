@@ -1,23 +1,33 @@
 import { Component, ComponentChildren, createRef, render } from "preact";
-import { ITerminalAddon, Terminal } from "@xterm/xterm";
 import { Browser, Detection, Offer, Sentry, Session } from "zmodem.js";
 import { Button, MyModal } from "./MyModal";
 
-export class ZModemAddon implements ITerminalAddon {
-    term!: Terminal;
+/*
+ * ZMODEM filter sitting between the websocket and the terminal. It is
+ * terminal-agnostic: the host passes callbacks for writing output,
+ * sending bytes to the server, gating stdin during transfers, and
+ * restoring focus afterwards.
+ */
+export class ZModemAddon {
     elem!: HTMLDivElement;
     sentry!: Sentry;
 
     toTerminal: (data: Uint8Array) => void;
     toServer: (data: Uint8Array) => void;
+    setStdinEnabled: (enabled: boolean) => void;
+    focus: () => void;
 
     constructor(props: {
         toTerminal: (data: Uint8Array) => void,
-        toServer: (data: Uint8Array) => void
+        toServer: (data: Uint8Array) => void,
+        setStdinEnabled: (enabled: boolean) => void,
+        focus: () => void
     }) {
         this.createElement();
         this.toTerminal = props.toTerminal;
         this.toServer = props.toServer;
+        this.setStdinEnabled = props.setStdinEnabled;
+        this.focus = props.focus;
 
         this.init();
     }
@@ -36,13 +46,6 @@ export class ZModemAddon implements ITerminalAddon {
         }
     }
 
-    activate(terminal: Terminal): void {
-        this.term = terminal
-    }
-
-    dispose() {
-    }
-
     private init() {
         render(<></>, this.elem);
 
@@ -56,14 +59,14 @@ export class ZModemAddon implements ITerminalAddon {
 
     private reset() {
         this.init();
-        this.term.options.disableStdin = false;
-        this.term.focus();
+        this.setStdinEnabled(true);
+        this.focus();
     }
 
     private onDetect(detection: Detection) {
         var zsession = detection.confirm();
 
-        this.term.options.disableStdin = true;
+        this.setStdinEnabled(false);
 
         zsession.on('session_end', () => { this.reset() });
 

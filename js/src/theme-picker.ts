@@ -2,7 +2,7 @@
 // themes, font size, and font family at runtime. All choices are persisted
 // to localStorage and restored on page load.
 
-import { Terminal } from "@xterm/xterm";
+import type { GoTTYRioterm } from "./rioterm";
 
 // The global populated by /themes.js
 interface ThemeMap {
@@ -45,30 +45,34 @@ function themeLabel(name: string): string {
 }
 
 // Apply a theme's color map to an xterm.js terminal
-function applyTheme(term: Terminal | undefined, colors: { [key: string]: string } | undefined) {
+function applyTheme(term: GoTTYRioterm | undefined, colors: { [key: string]: string } | undefined) {
     if (term && colors) {
-        term.options.theme = colors as any;
+        term.setPreferences({ theme: colors });
     }
 }
 
 // Apply stored font settings
-function applyFontPrefs(term: Terminal | undefined) {
+function applyFontPrefs(term: GoTTYRioterm | undefined) {
     if (!term) return;
+    const prefs: Record<string, unknown> = {};
     const fs = localStorage.getItem(STORAGE_FONT_SIZE);
     if (fs) {
         const n = parseInt(fs, 10);
         if (!isNaN(n) && n >= 8 && n <= 48) {
-            term.options.fontSize = n;
+            prefs["font-size"] = n;
         }
     }
     const ff = localStorage.getItem(STORAGE_FONT_FAMILY);
     if (ff) {
-        term.options.fontFamily = ff;
+        prefs["font-family"] = ff;
+    }
+    if (Object.keys(prefs).length > 0) {
+        term.setPreferences(prefs);
     }
 }
 
 // Build the picker UI and attach it to the page
-export function initThemePicker(term?: Terminal): void {
+export function initThemePicker(term?: GoTTYRioterm): void {
     const themes = (window as any).gotty_themes as ThemeMap | undefined;
     if (!themes) return;
 
@@ -343,7 +347,7 @@ export function initThemePicker(term?: Terminal): void {
     sizeRow.className = "font-size-row";
 
     const savedSize = activeFontSize ? parseInt(activeFontSize, 10) : null;
-    const currentSize = (savedSize && !isNaN(savedSize)) ? savedSize : (term?.options?.fontSize || 14);
+    const currentSize = (savedSize && !isNaN(savedSize)) ? savedSize : (term?.appearance.fontSize || 14);
 
     for (const sz of FONT_SIZES) {
         const sb = document.createElement("button");
@@ -354,7 +358,7 @@ export function initThemePicker(term?: Terminal): void {
         }
         sb.addEventListener("click", () => {
             if (term) {
-                term.options.fontSize = sz;
+                term.setPreferences({ "font-size": sz });
             }
             localStorage.setItem(STORAGE_FONT_SIZE, String(sz));
             sizeRow.querySelectorAll(".size-btn").forEach((el) => el.classList.remove("active"));
@@ -371,7 +375,7 @@ export function initThemePicker(term?: Terminal): void {
     ffTitle.textContent = "Font Family";
     panel.appendChild(ffTitle);
 
-    const currentFF = activeFontFamily || term?.options?.fontFamily || "";
+    const currentFF = activeFontFamily || term?.appearance.fontFamily || "";
 
     for (const ff of FONT_FAMILIES) {
         const item = document.createElement("div");
@@ -393,7 +397,7 @@ export function initThemePicker(term?: Terminal): void {
 
         item.addEventListener("click", () => {
             if (term) {
-                term.options.fontFamily = ff.value;
+                term.setPreferences({ "font-family": ff.value });
             }
             localStorage.setItem(STORAGE_FONT_FAMILY, ff.value);
             panel.querySelectorAll(".font-family-item").forEach((el) => {
