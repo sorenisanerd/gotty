@@ -48,3 +48,43 @@ jobs:
       with:
         name: binaries
         path: builds/pkg/*/gotty
+
+
+  js-tests:
+    runs-on: "ubuntu-latest"
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-go@v7
+      with:
+        go-version-file: go.mod
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+
+    - name: "Install JS dependencies"
+      run: "cd js && npm ci"
+
+    - name: "Unit tests (vitest)"
+      run: "cd js && npm test"
+
+    - name: "Install browser for end-to-end tests"
+      run: "cd js && npx playwright install --with-deps chromium"
+
+    - name: "Install ZMODEM tools for end-to-end tests"
+      run: "sudo apt-get update && sudo apt-get install -y lrzsz"
+
+    - name: "Build the JS bundle that gotty serves"
+      run: "make assets"
+
+    - name: "End-to-end tests (playwright)"
+      run: "cd js && npm run test:e2e"
+
+    - name: "Upload Playwright artifacts on failure"
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: playwright-artifacts
+        path: js/test-results/

@@ -2,3 +2,5 @@ gotty
 builds
 js/dist
 js/node_modules/*
+js/test-results
+js/playwright-report

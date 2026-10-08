@@ -20,7 +20,10 @@
       }
   },
     "exclude": [
-      "node_modules",
-      "dist"
-    ]
+    "node_modules",
+    "dist",
+    "e2e",
+    "vitest.config.mts",
+    "playwright.config.ts"
+  ]
 }
