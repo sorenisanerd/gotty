@@ -1,8 +1,49 @@
-##  v1.7.0 (unreleased)
+##  v1.9.0 (unreleased)
 
+* Fix `sz` file download. `Browser` was imported from the `zmodem.js` package
+  root, which does not export it, so the download failed with
+  `Browser.save_to_disk is not a function`. Fixes #136. (#167)
 * Add `preferences { alt_is_meta = true }` — restores hterm's Alt-as-Meta key
-  behavior for Emacs users. Uses `attachCustomKeyEventHandler` to intercept
-  Alt+key combos and send `\x1b` prefix (Meta). Fixes #44.
+  behavior for Emacs users. Fixes #44.
+* Support binding to multiple interfaces via a comma-separated address list.
+* Add OSC 52 clipboard support, so selecting text in the terminal copies it to
+  the local clipboard. Thanks, @tastypear! (#156)
+* Return HTTP 503 instead of hanging when a connection is refused because the
+  `--max-connection` limit is reached. Thanks, @VXNCXNX! (#155)
+* Refresh and harden the JavaScript toolchain dependencies, clearing several
+  open security advisories.
+* CI: the Docker pre-release workflow no longer runs on Dependabot branch
+  pushes, and the pull-request test gate watches the `main` branch instead of
+  the non-existent `master`. (#157)
+
+##  v1.8.0 (2026-05-24)
+
+* Add sixel graphics support via xterm-addon-image. Thanks, @a2800276!
+* Add server-side WebSocket Ping/Pong to prevent idle disconnects.
+* Fix a WebSocket write deadline that caused ~45s disconnections.
+* Improve terminal rendering of box-drawing characters and custom fonts.
+  Thanks, @artile!
+* Add better embedding support. Thanks, @pancsta!
+* Handle missing terminal preferences and apply them before xterm opens.
+  Thanks, @euisuh!
+* Fix emoji / character-width spacing in Chrome (Unicode 11).
+  Thanks, @WeaselScience!
+* Fix ZMODEM protocol errors by catching and resetting the terminal state. (#46)
+* Add custom favicon support. (#27)
+* Add Dependabot configuration for Go modules, npm, and GitHub Actions.
+
+##  v1.7.2 (2026-05-17)
+
+* Fix the `default` theme not being applied on initial page load in a fresh browser.
+
+##  v1.7.1 (2026-05-14)
+
+* Fix non-constant format string vet errors in `fmt.Errorf` and `log.Printf`.
+* Fix SASS 1.8 requiring full paths, and refresh the JS dependencies via
+  `npm audit fix`. Thanks, @a2800276!
+
+##  v1.7.0 (2026-05-13)
+
 * Add runtime display picker — floating 🎨 button for live theme switching, font size adjustment, and font family selection, all persisted to localStorage.
 * Add 6 built-in color themes: Catppuccin Mocha (default), Nord, Dracula, Solarized Dark, Monokai, Light — configurable via `preferences { theme = "name" }`.
 * Add font size picker with preset buttons (10–24 px) and config support via `preferences { font_size = N }`.
