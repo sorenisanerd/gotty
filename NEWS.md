@@ -1,4 +1,4 @@
-##  v1.9.0 (unreleased)
+##  v1.9.0 (2026-10-08)
 
 * Fix `sz` file download. `Browser` was imported from the `zmodem.js` package
   root, which does not export it, so the download failed with
