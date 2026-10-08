@@ -283,6 +283,7 @@ func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 		"var gotty_term = 'xterm';",
 		"var gotty_ws_query_args = '" + server.options.WSQueryArgs + "';",
 		"var gotty_preferences = " + string(preferences) + ";",
+		fmt.Sprintf("var gotty_confirm_close = %t;", server.options.ConfirmClose),
 	}
 
 	w.Write([]byte(strings.Join(lines, "\n")))

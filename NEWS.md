@@ -1,3 +1,12 @@
+##  v1.10.0 (unreleased)
+
+* Ask the browser to confirm before the page is closed or reloaded while a
+  session is connected, so an accidental Ctrl+W doesn't silently drop the
+  session. The guard is removed as soon as the connection closes, so exiting
+  the shell (e.g. with Ctrl-D) still closes the tab without a prompt. Enabled
+  by default; pass `--confirm-close=false` to disable. Fixes #142. Thanks,
+  @iTrooz, for the suggestion.
+
 ##  v1.9.0 (2026-10-08)
 
 * Fix `sz` file download. `Browser` was imported from the `zmodem.js` package
