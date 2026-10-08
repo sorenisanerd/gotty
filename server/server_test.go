@@ -2,9 +2,13 @@ package server
 
 import (
 	"context"
+	"net/http"
+	"net/http/httptest"
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 // mockSlave implements Slave for testing purposes.
@@ -137,6 +141,56 @@ func TestMultiInterfaceBinding_OneAddressFails(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "failed to listen") {
 		t.Fatalf("expected error containing 'failed to listen', got: %v", err)
+	}
+}
+
+func TestMaxConnection_RefusesWithServiceUnavailable(t *testing.T) {
+	// A connection beyond MaxConnection must be refused with 503, not a
+	// silent 200 OK with an empty body.
+	opts := &Options{
+		Address:       "127.0.0.1",
+		Port:          "0",
+		Quiet:         true,
+		MaxConnection: 1,
+	}
+
+	server, err := New(&mockFactory{}, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	counter := newCounter(0)
+	handler := server.setupHandlers(ctx, cancel, "/", counter)
+
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(ts.URL, "http") + "/ws"
+
+	// First connection should be accepted.
+	firstConn, firstResp, err := websocket.DefaultDialer.Dial(wsURL, nil)
+	if err != nil {
+		t.Fatalf("first connection should have been accepted, got error: %v", err)
+	}
+	defer firstConn.Close()
+	if firstResp.StatusCode != http.StatusSwitchingProtocols {
+		t.Fatalf("expected first connection to get %d, got %d", http.StatusSwitchingProtocols, firstResp.StatusCode)
+	}
+
+	// Second connection should be refused with 503 while the first is held open.
+	secondConn, secondResp, err := websocket.DefaultDialer.Dial(wsURL, nil)
+	if err == nil {
+		secondConn.Close()
+		t.Fatalf("expected second connection to be refused, but it was accepted")
+	}
+	if secondResp == nil {
+		t.Fatalf("expected an HTTP response for the refused connection, got none (err: %v)", err)
+	}
+	if secondResp.StatusCode != http.StatusServiceUnavailable {
+		t.Fatalf("expected second connection to get %d, got %d", http.StatusServiceUnavailable, secondResp.StatusCode)
 	}
 }
 

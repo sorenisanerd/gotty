@@ -56,6 +56,7 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 		if int64(server.options.MaxConnection) != 0 {
 			if num > server.options.MaxConnection {
 				closeReason = "exceeding max number of connections"
+				http.Error(w, "Exceeding max number of connections", http.StatusServiceUnavailable)
 				return
 			}
 		}
