@@ -1,7 +1,11 @@
 ---
 name: "pre-release"
 
-on: [push]
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: ${{ github.repository }}
