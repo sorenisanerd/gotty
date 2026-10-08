@@ -17,7 +17,7 @@
         "typescript": "^6.0.3",
         "webpack": "^5.107.1",
         "webpack-cli": "^7.0.2",
-        "webpack-dev-server": "^5.2.4"
+        "webpack-dev-server": "^5.2.6"
     },
     "dependencies": {
         "@popperjs/core": "^2.11.8",
