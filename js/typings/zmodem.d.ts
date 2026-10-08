@@ -44,6 +44,7 @@ declare module 'zmodem.js' {
         on(event: string, callback: (...args: any[]) => void): void;
         start(): void;
         close(): void;
+        abort(): void;
     }
 }
 

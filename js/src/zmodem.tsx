@@ -190,6 +190,9 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
 
 export class SendFileModal extends Component<SendFileModalProps, SendFileModalState> {
     filePickerRef = createRef<HTMLInputElement>();
+    // Guards against aborting the session twice — a Cancel click and the
+    // modal's dismiss handler can both fire.
+    private finished = false;
 
     constructor(props: SendFileModalProps) {
         super(props)
@@ -200,6 +203,7 @@ export class SendFileModal extends Component<SendFileModalProps, SendFileModalSt
         switch (this.state.state) {
             case "started":
                 return <>
+                    <Button priority="secondary" clickHandler={() => { this.cancel(); }}>Cancel</Button>
                     <Button priority="primary" clickHandler={() => { this.send(); }} disabled={true}>
                         Sending...
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -207,10 +211,30 @@ export class SendFileModal extends Component<SendFileModalProps, SendFileModalSt
                 </>
             case "notstarted":
                 return <>
+                    <Button priority="secondary" clickHandler={() => { this.cancel(); }}>Cancel</Button>
                     <Button priority="primary" clickHandler={() => { this.send(); }}>Send</Button>
                 </>
             default:
                 return
+        }
+    }
+
+    // Decline the pending transfer and hand control back to the terminal.
+    // session.abort() sends the ZMODEM abort sequence and fires 'session_end',
+    // which drives ZModemAddon.reset() — clearing the modal and re-enabling
+    // stdin. Without this the terminal stays frozen (issue #137).
+    cancel() {
+        if (this.finished) {
+            return;
+        }
+        this.finished = true;
+        try {
+            this.props.session.abort();
+        } catch (e) {
+            console.log(e);
+        }
+        if (this.props.onFinish !== undefined) {
+            this.props.onFinish();
         }
     }
 
@@ -222,18 +246,23 @@ export class SendFileModal extends Component<SendFileModalProps, SendFileModalSt
                 },
             }
         ).then(() => {
+            this.finished = true;
             this.setState({ state: "done" });
             this.props.session.close();
             if (this.props.onFinish !== undefined) {
                 this.props.onFinish();
             }
-        }).catch(e => console.log(e));
+        }).catch(e => {
+            console.log(e);
+            this.cancel();
+        });
     }
 
     render() {
         if (this.state.state != "done")
             return <MyModal title="Send file(s)"
-                buttons={this.buttons()}>
+                buttons={this.buttons()}
+                dismissHandler={() => { this.cancel(); }}>
                 <div class="mb-3">
                     <label for="formFileMultiple" class="form-label">
                         Remote requested file transfer
