@@ -53,7 +53,7 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
 
 ## Options
 ```sh
-   --address value, -a value     IP address to listen (default: "0.0.0.0") [$GOTTY_ADDRESS]
+   --address value, -a value     IP address(es) to listen (comma-separated for multiple) (default: "0.0.0.0") [$GOTTY_ADDRESS]
    --port value, -p value        Port number to liten (default: "8080") [$GOTTY_PORT]
    --path value, -m value        Base path (default: "/") [$GOTTY_PATH]
    --permit-write, -w            Permit clients to write to the TTY (BE CAREFUL) (default: false) [$GOTTY_PERMIT_WRITE]
@@ -78,12 +78,15 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
    --ws-origin value             A regular expression that matches origin URLs to be accepted by WebSocket. No cross origin requests are acceptable by default [$GOTTY_WS_ORIGIN]
    --ws-query-args value         Querystring arguments to append to the websocket instantiation [$GOTTY_WS_QUERY_ARGS]
    --enable-webgl                Enable WebGL renderer (default: true) [$GOTTY_ENABLE_WEBGL]
+   --confirm-close               Ask the browser to confirm before closing/reloading the page while a session is connected (default: true) [$GOTTY_CONFIRM_CLOSE]
    --quiet                       Don't log (default: false) [$GOTTY_QUIET]
+   --favicon value               Custom favicon (file path, URL, or data URI) [$GOTTY_FAVICON]
+   --ping-interval value         WebSocket server ping interval in seconds (0 to disable) (default: 30) [$GOTTY_PING_INTERVAL]
    --close-signal value          Signal sent to the command process when gotty close it (default: SIGHUP) (default: 1) [$GOTTY_CLOSE_SIGNAL]
    --close-timeout value         Time in seconds to force kill process after client is disconnected (default: -1) (default: -1) [$GOTTY_CLOSE_TIMEOUT]
    --config value                Config file path (default: "~/.gotty") [$GOTTY_CONFIG]
-   --help, -h                    show help (default: false)
-   --version, -v                 print the version (default: false)
+   --help, -h                    show help
+   --version, -v                 print the version
 ```
 ### Config File
 You can customize default options and your terminal by providing a config file to the `gotty` command. GoTTY loads a profile file at `~/.gotty` by default when it exists.
@@ -202,6 +205,23 @@ and Windows.
 
 Letter keys, digits, space, and common punctuation are supported.
 Browser-handled shortcuts like Alt+Tab and Alt+F4 are left alone.
+
+#### Confirm Before Closing the Tab
+
+While a session is connected, GoTTY asks the browser to confirm before the
+page is closed or reloaded. This guards against an accidental Ctrl+W, which
+the browser consumes before the page ever sees it. The guard is dropped as
+soon as the connection closes, so after you exit the shell (for example with
+Ctrl-D) the page closes without a prompt.
+
+```hcl
+confirm_close = true
+```
+
+Set it to `false` (or pass `--confirm-close=false`) to disable the prompt.
+Note that the dialog is drawn by the browser: its wording can't be
+customized, and the browser only shows it once you've interacted with the
+page.
 
 #### Runtime Picker (🎨 button)
 

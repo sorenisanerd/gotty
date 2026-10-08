@@ -194,6 +194,36 @@ func TestMaxConnection_RefusesWithServiceUnavailable(t *testing.T) {
 	}
 }
 
+func TestHandleConfig_EmitsConfirmClose(t *testing.T) {
+	// /config.js must expose the confirm-close setting so the browser can decide
+	// whether to arm the beforeunload guard.
+	for _, tc := range []struct {
+		name    string
+		confirm bool
+		want    string
+	}{
+		{"enabled", true, "var gotty_confirm_close = true;"},
+		{"disabled", false, "var gotty_confirm_close = false;"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			srv, err := New(&mockFactory{}, &Options{Quiet: true, ConfirmClose: tc.confirm})
+			if err != nil {
+				t.Fatalf("failed to create server: %v", err)
+			}
+
+			rec := httptest.NewRecorder()
+			srv.handleConfig(rec, httptest.NewRequest(http.MethodGet, "/config.js", nil))
+
+			if rec.Code != http.StatusOK {
+				t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
+			}
+			if !strings.Contains(rec.Body.String(), tc.want) {
+				t.Fatalf("expected config.js to contain %q, got:\n%s", tc.want, rec.Body.String())
+			}
+		})
+	}
+}
+
 func TestMultiInterfaceBinding_AddressTrimming(t *testing.T) {
 	// Spaces around addresses should be trimmed
 	opts := &Options{

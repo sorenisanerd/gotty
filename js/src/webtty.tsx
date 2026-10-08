@@ -126,6 +126,13 @@ export class WebTTY {
      */
     bufSize: number;
 
+    /*
+     * Optional lifecycle hooks, fired when the connection opens and closes.
+     * Used by the host page to track whether a session is live.
+     */
+    onConnect?: () => void;
+    onDisconnect?: () => void;
+
     constructor(term: Terminal, connectionFactory: ConnectionFactory, args: string, authToken: string) {
         this.term = term;
         this.connectionFactory = connectionFactory;
@@ -144,6 +151,8 @@ export class WebTTY {
         const setup = () => {
             connection.onOpen(() => {
                 const termInfo = this.term.info();
+
+                if (this.onConnect) this.onConnect();
 
                 this.initializeConnection(this.args, this.authToken);
 
@@ -197,6 +206,9 @@ export class WebTTY {
                 clearInterval(pingTimer);
                 this.term.deactivate();
                 this.term.showMessage("Connection Closed", 0);
+
+                if (this.onDisconnect) this.onDisconnect();
+
                 if (this.reconnect > 0) {
                     reconnectTimeout = setTimeout(() => {
                         connection = this.connectionFactory.create();
