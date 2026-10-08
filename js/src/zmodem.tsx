@@ -1,6 +1,8 @@
 import { Component, ComponentChildren, createRef, render } from "preact";
 import { ITerminalAddon, Terminal } from "@xterm/xterm";
-import { Browser, Detection, Offer, Sentry, Session } from "zmodem.js";
+import { Browser } from "zmodem.js/src/zmodem_browser";
+import { Sentry } from "zmodem.js";
+import type { Detection, Offer, Session } from "zmodem.js";
 import { Button, MyModal } from "./MyModal";
 
 export class ZModemAddon implements ITerminalAddon {

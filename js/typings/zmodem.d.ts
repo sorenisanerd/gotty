@@ -46,3 +46,10 @@ declare module 'zmodem.js' {
         close(): void;
     }
 }
+
+// The package root ('zmodem.js') does not export the browser helpers, so the
+// Browser API must be imported from the src/zmodem_browser entry point. Declare
+// that subpath so it is typed the same as the root module.
+declare module 'zmodem.js/src/zmodem_browser' {
+    export * from 'zmodem.js';
+}
