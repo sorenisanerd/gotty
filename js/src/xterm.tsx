@@ -77,6 +77,8 @@ export class GoTTYXterm {
         // Pre-register the alt_is_meta handler; it's a no-op unless altIsMeta is true.
         this.setupAltIsMeta();
 
+        this.setupOsc52();
+
         window.addEventListener("resize", () => { this.resizeListener(); });
     };
 
@@ -211,6 +213,47 @@ export class GoTTYXterm {
                 return false;
             }
 
+            return true;
+        });
+    };
+
+    setupOsc52() {
+        const fallbackCopy = (text: string) => {
+            const sel = document.getSelection();
+            const ranges: Range[] = [];
+            if (sel) for (let i = 0; i < sel.rangeCount; i++) ranges.push(sel.getRangeAt(i));
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.setAttribute("readonly", "");
+            ta.style.position = "fixed";
+            ta.style.top = "-9999px";
+            ta.style.left = "-9999px";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); } catch {}
+            document.body.removeChild(ta);
+            if (sel) {
+                sel.removeAllRanges();
+                for (const r of ranges) sel.addRange(r);
+            }
+            this.term.focus();
+        };
+        this.term.parser.registerOscHandler(52, (data: string) => {
+            const semi = data.indexOf(";");
+            const b64 = semi >= 0 ? data.slice(semi + 1) : data;
+            if (b64.length === 0) return true;
+            if (b64.charAt(b64.length - 1) === "?") return true;
+            try {
+                const bin = atob(b64);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const text = new TextDecoder().decode(bytes);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+                } else {
+                    fallbackCopy(text);
+                }
+            } catch {}
             return true;
         });
     };
