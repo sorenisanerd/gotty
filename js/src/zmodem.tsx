@@ -114,6 +114,10 @@ interface ReceiveFileModalState {
 }
 
 export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFileModalState> {
+    // Guards against handling the offer twice — a button click and the modal's
+    // dismiss handler can both fire.
+    private finished = false;
+
     constructor(props: ReceiveFileModalProps) {
         super(props)
         this.setState({ state: "notstarted" })
@@ -128,6 +132,7 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
         );
 
         this.props.xfer.accept().then((payloads: any) => {
+            this.finished = true;
             // All done, so stop updating the progress bar
             // and perform a final render.
             clearInterval(timerID);
@@ -154,7 +159,15 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
         }
     }
 
+    // Decline the offered file. Used by the Decline/Cancel buttons and by the
+    // modal's dismiss handler (✕/Esc/backdrop). Dismissing previously did
+    // nothing, which left the terminal frozen with stdin disabled; the ZSKIP
+    // ends the session and 'session_end' drives ZModemAddon.reset().
     skip() {
+        if (this.finished) {
+            return;
+        }
+        this.finished = true;
         this.props.xfer.skip()
         this.setState({ state: "skipped" })
     }
@@ -180,7 +193,8 @@ export class ReceiveFileModal extends Component<ReceiveFileModalProps, ReceiveFi
     render() {
         if (this.state.state != "done")
             return <MyModal title="Incoming file"
-                buttons={this.buttons()}>
+                buttons={this.buttons()}
+                dismissHandler={() => { this.skip(); }}>
                 Accept <code>{this.props.xfer.get_details().name}</code> ({this.props.xfer.get_details().size.toLocaleString(undefined, { maximumFractionDigits: 0 })} bytes)?
                 {this.progress()}
             </MyModal>
