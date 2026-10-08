@@ -36,7 +36,7 @@ Since the existing function lacks that mechanism for some purpose,
 this commit adds a new structure to provide it.
 ```
 
-When your pull request is to add a new feature, we recommend add an actual usecase so that we can discuss the best way to achive your requirement. Opening a proposal issue in advance is another good way to start discussion of new features.
+When your pull request is to add a new feature, we recommend add an actual usecase so that we can discuss the best way to achive your requirement.
 
 
 ## Contact
