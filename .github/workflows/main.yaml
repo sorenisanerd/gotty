@@ -2,6 +2,7 @@ name: "Unit and Build Tests"
 
 on:
   push:
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
