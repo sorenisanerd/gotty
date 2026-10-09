@@ -1,4 +1,8 @@
-FROM node:24 AS js-build
+# The JS bundle is platform-independent, so build it once on the build
+# platform rather than per target. This also means the stage does not need a
+# base image for every target platform — node:24 no longer publishes
+# linux/arm/v7, which the final image still targets.
+FROM --platform=$BUILDPLATFORM node:24 AS js-build
 WORKDIR /gotty
 COPY js /gotty/js
 COPY Makefile /gotty/
