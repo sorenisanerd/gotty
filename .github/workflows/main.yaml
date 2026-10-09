@@ -20,7 +20,7 @@ jobs:
         go-version-file: go.mod
     - uses: actions/setup-node@v7
       with:
-        node-version: 22
+        node-version: 24
     - run: "make clean"
     - run: "make assets"
     - name: "Make sure gotty.js bundle is up-to-date"
@@ -63,7 +63,7 @@ jobs:
         go-version-file: go.mod
     - uses: actions/setup-node@v7
       with:
-        node-version: 22
+        node-version: 24
 
     - name: "Install JS dependencies"
       run: "cd js && npm ci"
