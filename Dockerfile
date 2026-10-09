@@ -1,4 +1,4 @@
-FROM node:22 AS js-build
+FROM node:24 AS js-build
 WORKDIR /gotty
 COPY js /gotty/js
 COPY Makefile /gotty/
