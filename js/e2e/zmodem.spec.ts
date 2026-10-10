@@ -18,13 +18,27 @@ async function typeLine(page: Page, text: string) {
   await page.keyboard.press("Enter");
 }
 
-async function waitForFile(path: string, timeout = 15_000) {
+// rz creates the destination file before the transfer finishes, so waiting for
+// existence and then reading races the write. Wait for the content instead.
+async function waitForFileContent(
+  path: string,
+  expected: string,
+  timeout = 15_000,
+) {
   const deadline = Date.now() + timeout;
+  let last = "";
   while (Date.now() < deadline) {
-    if (existsSync(path)) return;
+    try {
+      last = readFileSync(path, "utf8");
+      if (last === expected) return;
+    } catch {
+      // Not created yet.
+    }
     await new Promise((r) => setTimeout(r, 200));
   }
-  throw new Error(`Timed out waiting for ${path} to exist`);
+  throw new Error(
+    `Timed out waiting for ${path} to contain ${JSON.stringify(expected)}; last read ${JSON.stringify(last)}`,
+  );
 }
 
 // Open the page, wait for the terminal, and land in a clean scratch directory.
@@ -65,10 +79,7 @@ test.describe("zmodem file transfer", () => {
     });
     await modal.getByRole("button", { name: "Send" }).click();
 
-    await waitForFile(`${SCRATCH}/uploaded.txt`);
-    expect(readFileSync(`${SCRATCH}/uploaded.txt`, "utf8")).toBe(
-      "hello from playwright\n",
-    );
+    await waitForFileContent(`${SCRATCH}/uploaded.txt`, "hello from playwright\n");
   });
 
   test("sz downloads a file to the browser", async ({ page }) => {

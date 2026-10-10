@@ -28,8 +28,18 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: "ts-loader",
-                exclude: /node_modules/
+                loader: "esbuild-loader",
+                exclude: /node_modules/,
+                options: {
+                    // Transpile only — no type checking here. Types are
+                    // checked separately by `npm run typecheck` (tsgo), so
+                    // the bundler no longer needs the TypeScript compiler
+                    // API (which TypeScript 7 does not expose yet).
+                    loader: "tsx",
+                    target: "esnext",
+                    jsx: "automatic",
+                    jsxImportSource: "preact"
+                }
             },
             {
                 test: /\.css$/i,
@@ -51,6 +61,13 @@ module.exports = {
         ],
     },
     optimization: {
+        // Keep scope hoisting off. webpack concatenates ESM modules, and
+        // license-webpack-plugin cannot see ESM modules nested inside a
+        // concatenated module: with it on, all six @xterm packages silently
+        // disappeared from gotty.licenses.txt. It was never triggered before
+        // because ts-loader emitted CommonJS (tsconfig "module": "commonJS");
+        // esbuild-loader emits ESM. Costs ~6 KB in the bundle.
+        concatenateModules: false,
         minimize: true,
         minimizer: [new TerserPlugin({
             terserOptions: {

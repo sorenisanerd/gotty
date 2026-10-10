@@ -12,7 +12,6 @@
       "sourceMap": true,
       "target": "esnext",
       "module": "commonJS",
-      "baseUrl": ".",
       "ignoreDeprecations": "6.0",
       "types": ["preact", "node"],
       "paths": {

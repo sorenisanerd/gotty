@@ -71,6 +71,9 @@ jobs:
     - name: "Unit tests (vitest)"
       run: "cd js && npm test"
 
+    - name: "Type check (tsc --noEmit)"
+      run: "make typecheck"
+
     - name: "Install browser for end-to-end tests"
       run: "cd js && npx playwright install --with-deps chromium"
 
