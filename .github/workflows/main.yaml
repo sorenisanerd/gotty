@@ -24,7 +24,14 @@ jobs:
     - run: "make clean"
     - run: "make assets"
     - name: "Make sure the built bundle is up-to-date"
-      run: "test -z \"$(git status --porcelain -- bindata/static/js)\""
+      run: |
+        changed=$(git status --porcelain -- bindata/static/js)
+        if [ -n "$changed" ]; then
+          echo "::error::Build output under bindata/static/js is out of date:"
+          echo "$changed"
+          git diff --stat -- bindata/static/js
+          exit 1
+        fi
 
 
   cross-compile-test:
