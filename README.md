@@ -274,6 +274,47 @@ $ tmux new -A -s gotty
 
 By using terminal multiplexers, you can have the control of your terminal and allow clients to just see your screen.
 
+### Running at Startup
+
+If you want GoTTY to start automatically after boot, prefer a service manager
+such as systemd over `cron @reboot`. Cron starts commands with a small,
+non-interactive environment; in particular, `TERM` and shell startup behavior
+may differ from an interactive login. That can make applications inside tmux
+handle keys such as `Ctrl-L` or `Tab` differently.
+
+The example below starts a shared tmux session through GoTTY as a dedicated
+user and sets an explicit terminal type:
+
+```ini
+[Unit]
+Description=GoTTY terminal sharing
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=gotty
+Environment=TERM=xterm-256color
+WorkingDirectory=/home/gotty
+ExecStart=/usr/local/bin/gotty --config /etc/gotty/config --permit-write /bin/bash -lc "exec tmux new-session -A -s gotty"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Save the unit as `/etc/systemd/system/gotty.service`, then enable it:
+
+```sh
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable --now gotty.service
+```
+
+If you do use `cron @reboot`, use absolute paths for `gotty`, the config file,
+certificates, and the command you are starting. Also set `TERM` explicitly and
+start the intended shell yourself instead of relying on cron's default shell.
+
 ### Quick Sharing on tmux
 
 To share your current session with others by a shortcut key, you can add a line like below to your `.tmux.conf`.
