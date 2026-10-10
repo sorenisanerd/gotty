@@ -22,7 +22,7 @@
         "style-loader": "^4.0.0",
         "terser-webpack-plugin": "^5.6.1",
         "ts-loader": "^9.5.2",
-        "typescript": "^6.0.3",
+        "typescript": "^7.0.2",
         "vitest": "^5.0.3",
         "webpack": "^5.107.2",
         "webpack-cli": "^7.0.2",
