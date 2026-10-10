@@ -1,5 +1,10 @@
 ##  v1.10.0 (unreleased)
 
+* Fix the display settings picker's font handling. Changing the font size or
+  family now re-fits the terminal to the window instead of leaving it
+  overflowing the edge, and a restored preference is re-fitted on load too.
+  Font families that are not installed are now marked "not installed" instead
+  of silently falling back to monospace when selected.
 * Ask the browser to confirm before the page is closed or reloaded while a
   session is connected, so an accidental Ctrl+W doesn't silently drop the
   session. The guard is removed as soon as the connection closes, so exiting
