@@ -254,6 +254,15 @@ openssl req -x509 -nodes -days 9999 -newkey rsa:2048 -keyout ~/.gotty.key -out ~
 
 For additional security, you can use the SSL/TLS client certificate authentication by providing a CA certificate file to the `--tls-ca-crt` option (this option requires the `-t` or `--tls` to be set). This option requires all clients to send valid client certificates that are signed by the specified certification authority.
 
+## Running behind a reverse proxy
+
+GoTTY speaks HTTP/1.1, so its WebSocket is an ordinary RFC6455 `Upgrade` on that connection. If your edge serves the browser over HTTP/2 it must translate the upgrade down to HTTP/1.1 for the GoTTY hop — GoTTY never sees HTTP/2, so RFC8441 support would not change anything. A page that loads while the terminal stays black is almost always the upgrade not completing at the edge.
+
+- **Check the handshake.** In devtools → Network, the `…/ws` request should be **101 Switching Protocols**. A `403`, or a plain HTTP response, means the proxy treated it as an ordinary request: forward `Upgrade` and `Connection: upgrade`, and don't buffer that route.
+- **Check `Host` and `Origin`.** Without `--ws-origin`, GoTTY refuses cross-origin handshakes by default, so the browser's `Origin` must match the `Host` GoTTY sees. An edge that rewrites `Host` — or a GoTTY on a loopback address or unix socket — breaks the match. Preserve the original `Host` (nginx: `proxy_set_header Host $host;`; Caddy does it by default) and/or set `--ws-origin '^https://terminal\.example\.com$'`.
+
+Under a subpath, the proxy must not strip the prefix; keep it in sync with `--path`.
+
 ## Sharing with Multiple Clients
 
 GoTTY starts a new process with the given command when a new client connects to the server. This means users cannot share a single terminal with others by default. However, you can use terminal multiplexers for sharing a single process with multiple clients.
