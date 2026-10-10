@@ -15,7 +15,7 @@ const elem = document.getElementById("terminal")
 if (elem !== null) {
     var term: GoTTYXterm;
     term = new GoTTYXterm(elem, gotty_preferences);
-    initThemePicker(term.term);
+    initThemePicker(term.term, () => term.refit());
 
     // Confirm-close guard. When enabled, ask the browser to confirm before the
     // page unloads while a session is connected. It is armed on connect and

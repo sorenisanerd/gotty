@@ -86,6 +86,13 @@ export class GoTTYXterm {
         return { columns: this.term.cols, rows: this.term.rows };
     };
 
+    // Re-fit to the container. Needed after a font change: the cell size
+    // changes but the grid keeps its cols/rows, so the terminal would
+    // otherwise overflow the window rather than reflow.
+    refit(): void {
+        this.resizeListener();
+    };
+
     // This gets called from the Websocket's onReceive handler
     output(data: Uint8Array) {
         this.zmodemAddon.consume(data);
