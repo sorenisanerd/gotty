@@ -1,16 +1,25 @@
-##  v1.10.0 (unreleased)
+##  v1.10.0 (2026-10-10)
 
-* Fix the display settings picker's font handling. Changing the font size or
-  family now re-fits the terminal to the window instead of leaving it
-  overflowing the edge, and a restored preference is re-fitted on load too.
-  Font families that are not installed are now marked "not installed" instead
-  of silently falling back to monospace when selected.
+* Fix the terminal hanging when the `rz` upload dialog is dismissed — Cancel,
+  the ✕ button, Esc, or the backdrop. The ZMODEM session stayed open and
+  `disableStdin` was never cleared, so the terminal stopped accepting input.
+  Fixes #137.
+* Fix the same freeze when the `sz` download dialog is dismissed, which left
+  the incoming offer undeclined.
 * Ask the browser to confirm before the page is closed or reloaded while a
   session is connected, so an accidental Ctrl+W doesn't silently drop the
   session. The guard is removed as soon as the connection closes, so exiting
   the shell (e.g. with Ctrl-D) still closes the tab without a prompt. Enabled
   by default; pass `--confirm-close=false` to disable. Fixes #142. Thanks,
   @iTrooz, for the suggestion.
+* Fix the display settings picker's font handling. Changing the font size or
+  family now re-fits the terminal to the window instead of leaving it
+  overflowing the edge, and a restored preference is re-fitted on load too.
+  Font families that are not installed are now marked "not installed" instead
+  of silently falling back to monospace when selected.
+* Refresh the JavaScript toolchain — TypeScript 7 with the type check split
+  out of the bundler, preact 11, and the remaining `npm audit` advisories
+  cleared. Also drop `react-bootstrap`, which nothing imported.
 
 ##  v1.9.0 (2026-10-08)
 
