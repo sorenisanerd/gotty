@@ -2,7 +2,7 @@
 # platform rather than per target. This also means the stage does not need a
 # base image for every target platform — node:24 no longer publishes
 # linux/arm/v7, which the final image still targets.
-FROM --platform=$BUILDPLATFORM node:24 AS js-build
+FROM --platform=$BUILDPLATFORM node:25 AS js-build
 WORKDIR /gotty
 COPY js /gotty/js
 COPY Makefile /gotty/
