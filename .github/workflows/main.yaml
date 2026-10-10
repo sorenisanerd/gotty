@@ -23,8 +23,8 @@ jobs:
         node-version: 24
     - run: "make clean"
     - run: "make assets"
-    - name: "Make sure gotty.js bundle is up-to-date"
-      run: "diffsize=$(git diff bindata/static/js/gotty.js |  wc -l); test $diffsize == 0"
+    - name: "Make sure the built bundle is up-to-date"
+      run: "test -z \"$(git status --porcelain -- bindata/static/js)\""
 
 
   cross-compile-test:
