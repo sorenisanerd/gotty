@@ -12,7 +12,7 @@
         "@testing-library/jest-dom": "^7.0.1",
         "@testing-library/preact": "^3.2.4",
         "@types/bootstrap": "^5.2.11",
-        "css-loader": "^7.1.2",
+        "css-loader": "^7.1.5",
         "esbuild-loader": "^4.5.0",
         "jsdom": "^30.1.2",
         "license-webpack-plugin": "^4.0.2",
