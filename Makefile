@@ -72,6 +72,9 @@ test:
 test-js:
 	cd js && npm test
 
+typecheck:
+	cd js && npm run typecheck
+
 test-e2e:
 	cd js && npm run test:e2e
 
