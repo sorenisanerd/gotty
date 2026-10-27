@@ -79,6 +79,7 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
    --ws-query-args value         Querystring arguments to append to the websocket instantiation [$GOTTY_WS_QUERY_ARGS]
    --enable-webgl                Enable WebGL renderer (default: true) [$GOTTY_ENABLE_WEBGL]
    --confirm-close               Ask the browser to confirm before closing/reloading the page while a session is connected (default: true) [$GOTTY_CONFIRM_CLOSE]
+   --mobile-keys                 Show a strip of special keys (Esc, Ctrl, Alt, Tab, arrows, ...) above the on-screen keyboard on touch devices (default: true) [$GOTTY_MOBILE_KEYS]
    --quiet                       Don't log (default: false) [$GOTTY_QUIET]
    --favicon value               Custom favicon (file path, URL, or data URI) [$GOTTY_FAVICON]
    --ping-interval value         WebSocket server ping interval in seconds (0 to disable) (default: 30) [$GOTTY_PING_INTERVAL]
@@ -222,6 +223,31 @@ Set it to `false` (or pass `--confirm-close=false`) to disable the prompt.
 Note that the dialog is drawn by the browser: its wording can't be
 customized, and the browser only shows it once you've interacted with the
 page.
+
+#### Special Keys on Phones and Tablets
+
+Phone keyboards have no Esc, Tab, Ctrl, Alt or arrow keys. On touch
+devices, GoTTY shows a strip of them right above the on-screen keyboard
+while it is open:
+
+```
+Esc   /    -    |   Home  ↑   End  PgUp
+Tab  Ctrl Alt Shift  ←    ↓    →   PgDn
+```
+
+Ctrl, Alt and Shift apply to the next key, typed on either the strip or the
+phone keyboard: tap Ctrl, then type `c` for Ctrl-C, or tap Ctrl, then ← to
+move back a word. Tap a lit modifier again to cancel it. The arrows and
+PgUp/PgDn repeat while held.
+
+The strip appears only when writing is permitted (`--permit-write`), and
+not with a hardware keyboard, which never opens the on-screen one.
+
+```hcl
+mobile_keys = true
+```
+
+Set it to `false` (or pass `--mobile-keys=false`) to turn the strip off.
 
 #### Runtime Picker (🎨 button)
 

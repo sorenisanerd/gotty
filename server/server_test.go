@@ -224,6 +224,38 @@ func TestHandleConfig_EmitsConfirmClose(t *testing.T) {
 	}
 }
 
+func TestHandleConfig_EmitsMobileKeys(t *testing.T) {
+	// /config.js must tell the browser whether to show the touch-device key
+	// strip. A read-only session ignores input, so the strip is off there too.
+	for _, tc := range []struct {
+		name  string
+		keys  bool
+		write bool
+		want  string
+	}{
+		{"enabled with write", true, true, "var gotty_mobile_keys = true;"},
+		{"enabled read-only", true, false, "var gotty_mobile_keys = false;"},
+		{"disabled", false, true, "var gotty_mobile_keys = false;"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			srv, err := New(&mockFactory{}, &Options{Quiet: true, MobileKeys: tc.keys, PermitWrite: tc.write})
+			if err != nil {
+				t.Fatalf("failed to create server: %v", err)
+			}
+
+			rec := httptest.NewRecorder()
+			srv.handleConfig(rec, httptest.NewRequest(http.MethodGet, "/config.js", nil))
+
+			if rec.Code != http.StatusOK {
+				t.Fatalf("expected status %d, got %d", http.StatusOK, rec.Code)
+			}
+			if !strings.Contains(rec.Body.String(), tc.want) {
+				t.Fatalf("expected config.js to contain %q, got:\n%s", tc.want, rec.Body.String())
+			}
+		})
+	}
+}
+
 func TestMultiInterfaceBinding_AddressTrimming(t *testing.T) {
 	// Spaces around addresses should be trimmed
 	opts := &Options{

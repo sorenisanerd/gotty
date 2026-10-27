@@ -1,3 +1,13 @@
+##  v1.11.0 (unreleased)
+
+* Add a strip of special keys for phones and tablets. Phone keyboards have
+  no Esc, Tab, Ctrl, Alt or arrow keys, which made shells, vim and tmux
+  nearly unusable from a phone. While the on-screen keyboard is open, GoTTY
+  now shows Esc, Tab, Ctrl, Alt, Shift, the arrows, Home/End, PgUp/PgDn and
+  `/ - |` right above it; Ctrl, Alt and Shift apply to the next key typed on
+  either keyboard. Shown only when writing is permitted. Enabled by default;
+  pass `--mobile-keys=false` to disable.
+
 ##  v1.10.0 (2026-10-10)
 
 * Fix the terminal hanging when the `rz` upload dialog is dismissed — Cancel,

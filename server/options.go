@@ -33,6 +33,7 @@ type Options struct {
 	WSQueryArgs         string `hcl:"ws_query_args" flagName:"ws-query-args" flagDescribe:"Querystring arguments to append to the websocket instantiation" default:""`
 	EnableWebGL         bool   `hcl:"enable_webgl" flagName:"enable-webgl" flagDescribe:"Enable WebGL renderer" default:"true"`
 	ConfirmClose        bool   `hcl:"confirm_close" flagName:"confirm-close" flagDescribe:"Ask the browser to confirm before closing/reloading the page while a session is connected" default:"true"`
+	MobileKeys          bool   `hcl:"mobile_keys" flagName:"mobile-keys" flagDescribe:"Show a strip of special keys (Esc, Ctrl, Alt, Tab, arrows, ...) above the on-screen keyboard on touch devices" default:"true"`
 	Quiet               bool   `hcl:"quiet" flagName:"quiet" flagDescribe:"Don't log" default:"false"`
 
 	TitleVariables map[string]interface{}

@@ -17,7 +17,19 @@ export default defineConfig({
     baseURL: BASE_URL,
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      testIgnore: /mobile-keys\.spec\.ts/,
+    },
+    {
+      // Chromium only: CI installs no other browser.
+      name: "mobile-chromium",
+      use: { ...devices["Pixel 7"] },
+      testMatch: /mobile-keys\.spec\.ts/,
+    },
+  ],
   webServer: {
     command: "bash e2e/start-gotty.sh",
     url: BASE_URL,

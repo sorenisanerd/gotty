@@ -27,6 +27,9 @@ export class GoTTYXterm {
     toServer!: (data: string | Uint8Array) => void;
     encoder: TextEncoder;
     altIsMeta: boolean = false;
+    // Rewrites typed input before it is sent; set by the mobile key strip so
+    // its armed modifiers apply to the phone keyboard's next character.
+    inputTransformer: ((data: string) => string) | null = null;
 
     constructor(elem: HTMLElement, preferences: Record<string, unknown> = {}) {
         this.elem = elem;
@@ -64,6 +67,10 @@ export class GoTTYXterm {
         };
 
         this.term.open(elem);
+        // xterm already turns off autocorrect, autocapitalize and spellcheck
+        // on its input; also turn off autocomplete, so phone keyboards don't
+        // suggest or rewrite shell commands.
+        this.term.textarea?.setAttribute("autocomplete", "off");
 
         try {
             this.term.loadAddon(new WebglAddon());
@@ -91,6 +98,13 @@ export class GoTTYXterm {
     // otherwise overflow the window rather than reflow.
     refit(): void {
         this.resizeListener();
+    };
+
+    // Fit to the container without scrolling to the bottom or showing the
+    // size overlay. Used when the on-screen keyboard opens or closes, so a
+    // user reading the scrollback keeps their place.
+    fit(): void {
+        this.fitAddOn.fit();
     };
 
     // This gets called from the Websocket's onReceive handler
@@ -280,8 +294,15 @@ export class GoTTYXterm {
         }
 
         this.onDataHandler = this.term.onData((input) => {
-            this.toServer(this.encoder.encode(input));
+            const out = this.inputTransformer ? this.inputTransformer(input) : input;
+            if (out !== "") {
+                this.toServer(this.encoder.encode(out));
+            }
         });
+    };
+
+    setInputTransformer(fn: ((data: string) => string) | null): void {
+        this.inputTransformer = fn;
     };
 
     onResize(callback: (colmuns: number, rows: number) => void) {
