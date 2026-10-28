@@ -6,7 +6,7 @@
   now shows Esc, Tab, Ctrl, Alt, Shift, the arrows, Home/End, PgUp/PgDn and
   `/ - |` right above it; Ctrl, Alt and Shift apply to the next key typed on
   either keyboard. Shown only when writing is permitted. Enabled by default;
-  pass `--mobile-keys=false` to disable.
+  pass `--mobile-keys=false` to disable. Thanks, @ncongduy!
 
 ##  v1.10.0 (2026-10-10)
 
