@@ -125,3 +125,14 @@ describe("re-fit after a font change", () => {
     expect(refit).not.toHaveBeenCalled();
   });
 });
+
+describe("placement", () => {
+  it("lifts the button and panel above the mobile key strip", () => {
+    mockCanvas([]);
+    initThemePicker(makeTerm());
+
+    const css = [...document.head.querySelectorAll("style")].map((s) => s.textContent).join("");
+    expect(css).toContain("bottom: calc(12px + var(--gotty-bottom-inset, 0px))");
+    expect(css).toContain("bottom: calc(54px + var(--gotty-bottom-inset, 0px))");
+  });
+});

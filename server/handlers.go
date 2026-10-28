@@ -284,6 +284,7 @@ func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 		"var gotty_ws_query_args = '" + server.options.WSQueryArgs + "';",
 		"var gotty_preferences = " + string(preferences) + ";",
 		fmt.Sprintf("var gotty_confirm_close = %t;", server.options.ConfirmClose),
+		fmt.Sprintf("var gotty_mobile_keys = %t;", server.options.MobileKeys && server.options.PermitWrite),
 	}
 
 	w.Write([]byte(strings.Join(lines, "\n")))

@@ -121,7 +121,7 @@ export function initThemePicker(term?: Terminal, refit?: () => void): void {
     style.textContent = `
 #gotty-theme-btn {
     position: fixed;
-    bottom: 12px;
+    bottom: calc(12px + var(--gotty-bottom-inset, 0px));
     right: 12px;
     width: 36px;
     height: 36px;
@@ -145,7 +145,7 @@ export function initThemePicker(term?: Terminal, refit?: () => void): void {
 }
 #gotty-theme-picker {
     position: fixed;
-    bottom: 54px;
+    bottom: calc(54px + var(--gotty-bottom-inset, 0px));
     right: 12px;
     z-index: 9999;
     display: none;

@@ -2,6 +2,7 @@ import { ConnectionFactory } from "./websocket";
 import { WebTTY, protocols } from "./webtty";
 import { GoTTYXterm } from "./xterm";
 import { initThemePicker } from "./theme-picker";
+import { initMobileKeys } from "./mobile-keys";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
@@ -9,6 +10,7 @@ declare var gotty_term: string;
 declare var gotty_ws_query_args: string;
 declare var gotty_preferences: Record<string, unknown>;
 declare var gotty_confirm_close: boolean;
+declare var gotty_mobile_keys: boolean;
 
 const elem = document.getElementById("terminal")
 
@@ -16,6 +18,7 @@ if (elem !== null) {
     var term: GoTTYXterm;
     term = new GoTTYXterm(elem, gotty_preferences);
     initThemePicker(term.term, () => term.refit());
+    initMobileKeys(term, gotty_mobile_keys);
 
     // Confirm-close guard. When enabled, ask the browser to confirm before the
     // page unloads while a session is connected. It is armed on connect and
