@@ -2,19 +2,25 @@ package localcommand
 
 import (
 	"bytes"
+	"os/exec"
 	"reflect"
 	"testing"
 	"time"
 )
 
 func TestNewFactory(t *testing.T) {
-	factory, err := NewFactory("/bin/false", []string{}, &Options{CloseSignal: 123, CloseTimeout: 321})
+	command, err := exec.LookPath("false")
+	if err != nil {
+		t.Fatalf("failed to find false command: %v", err)
+	}
+
+	factory, err := NewFactory(command, []string{}, &Options{CloseSignal: 123, CloseTimeout: 321})
 	if err != nil {
 		t.Errorf("NewFactory() returned error")
 		return
 	}
-	if factory.command != "/bin/false" {
-		t.Errorf("factory.command = %v, expected %v", factory.command, "/bin/false")
+	if factory.command != command {
+		t.Errorf("factory.command = %v, expected %v", factory.command, command)
 	}
 	if !reflect.DeepEqual(factory.argv, []string{}) {
 		t.Errorf("factory.argv = %v, expected %v", factory.argv, []string{})
@@ -23,7 +29,10 @@ func TestNewFactory(t *testing.T) {
 		t.Errorf("factory.options = %v, expected %v", factory.options, &Options{})
 	}
 
-	slave, _ := factory.New(nil, nil)
+	slave, err := factory.New(nil, nil)
+	if err != nil {
+		t.Fatalf("factory.New() returned error: %v", err)
+	}
 	lcmd := slave.(*LocalCommand)
 	if lcmd.closeSignal != 123 {
 		t.Errorf("lcmd.closeSignal = %v, expected %v", lcmd.closeSignal, 123)
