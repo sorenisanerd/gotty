@@ -14,14 +14,12 @@ func TestNewFactory(t *testing.T) {
 		t.Fatalf("failed to find false command: %v", err)
 	}
 
-	// command is resolved through PATH, so the assertion below is about
-	// NewFactory storing what it was handed rather than about a specific
-	// binary path.
 	factory, err := NewFactory(command, []string{}, &Options{CloseSignal: 123, CloseTimeout: 321})
 	if err != nil {
 		t.Errorf("NewFactory() returned error")
 		return
 	}
+	// command came from PATH, so this checks pass-through, not a fixed path.
 	if factory.command != command {
 		t.Errorf("factory.command = %v, expected %v", factory.command, command)
 	}
@@ -70,6 +68,10 @@ func TestFactoryNew(t *testing.T) {
 		t.Errorf("factory.New() returned error")
 		return
 	}
+	// Safety net for the early returns below, which would otherwise leave
+	// cat running on a pty. The Close() at the end of the test still checks
+	// the error; a second Close is a no-op once ptyClosed has fired.
+	t.Cleanup(func() { _ = slave.Close() })
 
 	writeBuf := []byte("foobar\n")
 	n, err := slave.Write(writeBuf)
