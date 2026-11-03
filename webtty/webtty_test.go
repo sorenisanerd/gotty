@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/base64"
+	"errors"
 	"io"
 	"sync"
 	"testing"
@@ -182,6 +183,29 @@ func TestResizeTerminal(t *testing.T) {
 	wg.Wait()
 }
 
+func TestResizeTerminalError(t *testing.T) {
+	resizeErr := errors.New("resize failed")
+	mMaster := newMockMaster()
+	mSlave := newMockSlave()
+	mSlave.resizeErr = resizeErr
+
+	wt, err := New(mMaster, mSlave)
+	if err != nil {
+		t.Fatalf("Unexpected error from New(): %s", err)
+	}
+
+	err = wt.handleMasterReadEvent([]byte(`3{"Columns": 1234, "Rows": 2345}`))
+	if err == nil {
+		t.Fatal("expected resize error, got nil")
+	}
+	if !errors.Is(err, resizeErr) {
+		t.Fatalf("expected resize error %q, got %q", resizeErr, err)
+	}
+	if mSlave.columns != 1234 || mSlave.rows != 2345 {
+		t.Fatalf("resize dimensions not passed correctly: got %dx%d, expected 1234x2345", mSlave.columns, mSlave.rows)
+	}
+}
+
 type mockMaster struct {
 	gottyToMasterReader *io.PipeReader
 	gottyToMasterWriter *io.PipeWriter
@@ -196,6 +220,7 @@ type mockSlave struct {
 	slaveToGottyWriter *io.PipeWriter
 	wg                 sync.WaitGroup
 	columns, rows      int
+	resizeErr          error
 }
 
 func prepareSUT(t *testing.T, wg *sync.WaitGroup, options ...Option) (*mockMaster, *mockSlave, *WebTTY, context.CancelFunc) {
@@ -279,6 +304,9 @@ func (ms *mockSlave) WindowTitleVariables() map[string]interface{} {
 func (ms *mockSlave) ResizeTerminal(columns int, rows int) error {
 	ms.columns = columns
 	ms.rows = rows
+	if ms.resizeErr != nil {
+		return ms.resizeErr
+	}
 	ms.wg.Done()
 	return nil
 }

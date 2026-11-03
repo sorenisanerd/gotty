@@ -232,7 +232,9 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
 			columns = int(args.Columns)
 		}
 
-		wt.slave.ResizeTerminal(columns, rows)
+		if err := wt.slave.ResizeTerminal(columns, rows); err != nil {
+			return errors.Wrapf(err, "failed to resize terminal")
+		}
 	default:
 		return errors.Errorf("unknown message type `%c`", data[0])
 	}
