@@ -14,6 +14,9 @@ func TestNewFactory(t *testing.T) {
 		t.Fatalf("failed to find false command: %v", err)
 	}
 
+	// command is resolved through PATH, so the assertion below is about
+	// NewFactory storing what it was handed rather than about a specific
+	// binary path.
 	factory, err := NewFactory(command, []string{}, &Options{CloseSignal: 123, CloseTimeout: 321})
 	if err != nil {
 		t.Errorf("NewFactory() returned error")
@@ -33,7 +36,15 @@ func TestNewFactory(t *testing.T) {
 	if err != nil {
 		t.Fatalf("factory.New() returned error: %v", err)
 	}
-	lcmd := slave.(*LocalCommand)
+	t.Cleanup(func() {
+		if err := slave.Close(); err != nil {
+			t.Errorf("close() failed: %v", err)
+		}
+	})
+	lcmd, ok := slave.(*LocalCommand)
+	if !ok {
+		t.Fatalf("factory.New() returned %T, expected *LocalCommand", slave)
+	}
 	if lcmd.closeSignal != 123 {
 		t.Errorf("lcmd.closeSignal = %v, expected %v", lcmd.closeSignal, 123)
 	}
@@ -43,7 +54,12 @@ func TestNewFactory(t *testing.T) {
 }
 
 func TestFactoryNew(t *testing.T) {
-	factory, err := NewFactory("/bin/cat", []string{}, &Options{})
+	command, err := exec.LookPath("cat")
+	if err != nil {
+		t.Fatalf("failed to find cat command: %v", err)
+	}
+
+	factory, err := NewFactory(command, []string{}, &Options{})
 	if err != nil {
 		t.Errorf("NewFactory() returned error")
 		return
