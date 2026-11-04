@@ -233,7 +233,9 @@ func (wt *WebTTY) handleMasterReadEvent(data []byte) error {
 		}
 
 		if err := wt.slave.ResizeTerminal(columns, rows); err != nil {
-			return errors.Wrapf(err, "failed to resize terminal")
+			// A resize failure is intentionally fatal to the session: the error
+			// propagates out of Run() and the server closes the WebSocket.
+			return errors.Wrapf(err, "failed to resize terminal (%dx%d)", columns, rows)
 		}
 	default:
 		return errors.Errorf("unknown message type `%c`", data[0])
