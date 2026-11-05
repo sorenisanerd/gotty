@@ -72,7 +72,7 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
    --once                        Accept only one client and exit on disconnection (default: false) [$GOTTY_ONCE]
    --timeout value               Timeout seconds for waiting a client(0 to disable) (default: 0) [$GOTTY_TIMEOUT]
    --permit-arguments            Permit clients to send command line arguments in URL (e.g. http://example.com:8080/?arg=AAA&arg=BBB) (default: false) [$GOTTY_PERMIT_ARGUMENTS]
-   --pass-headers                Pass HTTP request headers as environment variables (e.g. Cookie becomes HTTP_COOKIE) (default: false) [$GOTTY_PASS_HEADERS]
+   --pass-headers                Pass HTTP request headers as environment variables (e.g. Cookie becomes HTTP_COOKIE). Authorization headers and header names with characters other than letters, digits and - are not passed (default: false) [$GOTTY_PASS_HEADERS]
    --width value                 Static width of the screen, 0(default) means dynamically resize (default: 0) [$GOTTY_WIDTH]
    --height value                Static height of the screen, 0(default) means dynamically resize (default: 0) [$GOTTY_HEIGHT]
    --ws-origin value             A regular expression that matches origin URLs to be accepted by WebSocket. No cross origin requests are acceptable by default [$GOTTY_WS_ORIGIN]

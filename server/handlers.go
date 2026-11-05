@@ -86,7 +86,7 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 		conn.SetReadLimit(maxWSMessageSize)
 
 		if server.options.PassHeaders {
-			err = server.processWSConn(ctx, conn, r.Header)
+			err = server.processWSConn(ctx, conn, headersForBackend(r.Header))
 		} else {
 			err = server.processWSConn(ctx, conn, nil)
 		}
@@ -465,4 +465,45 @@ func jsString(s string) string {
 		panic(err)
 	}
 	return string(b)
+}
+
+// headersForBackend returns the request headers that --pass-headers hands
+// to the backend, where they become HTTP_* environment variables.
+//
+// Authorization and Proxy-Authorization are dropped: with basic auth they
+// carry GoTTY's own credential, which the command has no business seeing.
+//
+// Headers whose names contain anything but letters, digits and '-' are
+// dropped too. Underscores in particular would let a client send
+// X_Remote_User, which maps to the same HTTP_X_REMOTE_USER variable as an
+// X-Remote-User header set by an authenticating proxy, and possibly
+// override it. Web servers that run CGI scripts drop such headers for the
+// same reason.
+func headersForBackend(headers http.Header) map[string][]string {
+	out := make(map[string][]string, len(headers))
+	for name, values := range headers {
+		switch http.CanonicalHeaderKey(name) {
+		case "Authorization", "Proxy-Authorization":
+			continue
+		}
+		if !isPlainHeaderName(name) {
+			continue
+		}
+		out[name] = values
+	}
+	return out
+}
+
+func isPlainHeaderName(name string) bool {
+	if name == "" {
+		return false
+	}
+	for _, r := range name {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9', r == '-':
+		default:
+			return false
+		}
+	}
+	return true
 }

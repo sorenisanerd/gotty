@@ -640,3 +640,83 @@ func TestScripts_EscapeOperatorValues(t *testing.T) {
 		t.Errorf("config.js does not contain %q:\n%s", want, got)
 	}
 }
+
+func TestHeadersForBackend(t *testing.T) {
+	in := http.Header{
+		"Cookie":              {"session=abc"},
+		"X-Remote-User":       {"alice"},
+		"Authorization":       {"Basic dXNlcjpwYXNz"},
+		"Proxy-Authorization": {"Basic dXNlcjpwYXNz"},
+		"X_remote_user":       {"mallory"},
+		"X.Weird":             {"1"},
+	}
+	got := headersForBackend(in)
+
+	want := map[string][]string{
+		"Cookie":        {"session=abc"},
+		"X-Remote-User": {"alice"},
+	}
+	if len(got) != len(want) {
+		t.Fatalf("headersForBackend() = %v, want %v", got, want)
+	}
+	for k, v := range want {
+		if strings.Join(got[k], ",") != strings.Join(v, ",") {
+			t.Errorf("header %q = %v, want %v", k, got[k], v)
+		}
+	}
+}
+
+// recordingFactory records the headers each backend was created with.
+type recordingFactory struct {
+	headers chan map[string][]string
+}
+
+func (f *recordingFactory) Name() string { return "recording" }
+func (f *recordingFactory) New(params map[string][]string, headers map[string][]string) (Slave, error) {
+	f.headers <- headers
+	return &mockSlave{}, nil
+}
+
+func TestPassHeaders_DropsAuthorization(t *testing.T) {
+	factory := &recordingFactory{headers: make(chan map[string][]string, 1)}
+	opts := &Options{
+		Address:     "127.0.0.1",
+		Port:        "0",
+		Quiet:       true,
+		Credential:  "user:pass",
+		PassHeaders: true,
+	}
+	server, err := New(factory, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	ts := httptest.NewServer(server.setupHandlers(ctx, cancel, "/", newCounter(0)))
+	defer ts.Close()
+
+	reqHeader := http.Header{}
+	reqHeader.Set("Authorization", "Basic dXNlcjpwYXNz")
+	reqHeader.Set("Cookie", "session=abc")
+	conn, _, err := websocket.DefaultDialer.Dial("ws"+strings.TrimPrefix(ts.URL, "http")+"/ws", reqHeader)
+	if err != nil {
+		t.Fatalf("dial failed: %v", err)
+	}
+	defer conn.Close()
+	if err := conn.WriteMessage(websocket.TextMessage, []byte(`{"AuthToken":"user:pass"}`)); err != nil {
+		t.Fatalf("write failed: %v", err)
+	}
+
+	select {
+	case headers := <-factory.headers:
+		if _, ok := headers["Authorization"]; ok {
+			t.Errorf("Authorization header was passed to the backend")
+		}
+		if got := strings.Join(headers["Cookie"], ","); got != "session=abc" {
+			t.Errorf("Cookie = %q, want %q", got, "session=abc")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatalf("backend was not created")
+	}
+}
