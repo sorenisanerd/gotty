@@ -1,4 +1,4 @@
-##  v1.11.0 (unreleased)
+##  v1.11.0 (2026-11-05)
 
 * Add a strip of special keys for phones and tablets. Phone keyboards have
   no Esc, Tab, Ctrl, Alt or arrow keys, which made shells, vim and tmux
