@@ -19,7 +19,10 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v7
       with:
-        go-version-file: go.mod
+        # Build with the latest Go release, not the minimum version in go.mod,
+        # so binaries pick up standard-library security fixes.
+        go-version: stable
+        check-latest: true
 
     - name: "Build"
       run: "touch bindata/* bindata/*/* ; make"
