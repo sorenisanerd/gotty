@@ -66,6 +66,12 @@
 // [bool] Permit clients to send command line arguments in URL (e.g. http://example.com:8080/?arg=AAA&arg=BBB)
 // permit_arguments = false
 
+// [string] Origins allowed to embed GoTTY in a frame, in CSP frame-ancestors
+//          syntax (space-separated). 'none' forbids framing; use 'self' to
+//          allow GoTTY's own origin, or list origins such as
+//          "https://dash.example.com".
+// frame_ancestors = "'none'"
+
 // [object] Client terminal (hterm) preferences
 // preferences {
 

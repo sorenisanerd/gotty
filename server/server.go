@@ -37,6 +37,12 @@ type Server struct {
 	indexTemplate    *template.Template
 	titleTemplate    *noesctmpl.Template
 	manifestTemplate *template.Template
+
+	// Response headers that control who may embed GoTTY in a frame.
+	// frameOptions is empty when the allowed ancestors can't be expressed
+	// with X-Frame-Options.
+	contentSecurityPolicy string
+	frameOptions          string
 }
 
 // New creates a new instance of Server.
@@ -94,6 +100,11 @@ func New(factory Factory, options *Options) (*Server, error) {
 		return nil, errors.Wrapf(err, "failed to parse window title format `%s`", options.TitleFormat)
 	}
 
+	csp, frameOptions, err := frameAncestorsHeaders(options.FrameAncestors)
+	if err != nil {
+		return nil, err
+	}
+
 	var originChecker func(r *http.Request) bool
 	if options.WSOrigin != "" {
 		matcher, err := regexp.Compile(options.WSOrigin)
@@ -119,7 +130,54 @@ func New(factory Factory, options *Options) (*Server, error) {
 		indexTemplate:    indexTemplate,
 		titleTemplate:    titleTemplate,
 		manifestTemplate: manifestTemplate,
+
+		contentSecurityPolicy: csp,
+		frameOptions:          frameOptions,
 	}, nil
+}
+
+// frameAncestorsHeaders turns the frame-ancestors option into the values of
+// the Content-Security-Policy and X-Frame-Options response headers.
+//
+// The option uses CSP frame-ancestors syntax. For convenience, the keywords
+// none and self are accepted without their quotes. An empty value means
+// 'none', so framing is forbidden unless explicitly allowed.
+//
+// X-Frame-Options is only for browsers without CSP support. It can express
+// 'none' (DENY) and 'self' (SAMEORIGIN) but not a list of origins, so for
+// anything else only the CSP header is sent.
+func frameAncestorsHeaders(value string) (csp string, frameOptions string, err error) {
+	for _, r := range value {
+		if r == ';' || r == ',' || r < 0x20 || r == 0x7f {
+			return "", "", errors.Errorf("invalid frame-ancestors value %q: must be a space-separated list of sources", value)
+		}
+	}
+
+	sources := strings.Fields(value)
+	if len(sources) == 0 {
+		sources = []string{"'none'"}
+	}
+	for i, s := range sources {
+		if s == "none" || s == "self" {
+			sources[i] = "'" + s + "'"
+		}
+	}
+	for _, s := range sources {
+		if s == "'none'" && len(sources) > 1 {
+			return "", "", errors.Errorf("invalid frame-ancestors value %q: 'none' can't be combined with other sources", value)
+		}
+	}
+
+	if len(sources) == 1 {
+		switch sources[0] {
+		case "'none'":
+			frameOptions = "DENY"
+		case "'self'":
+			frameOptions = "SAMEORIGIN"
+		}
+	}
+
+	return "frame-ancestors " + strings.Join(sources, " "), frameOptions, nil
 }
 
 // Run starts the main process of the Server.

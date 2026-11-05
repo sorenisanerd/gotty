@@ -487,3 +487,98 @@ func TestCredentialsEqual(t *testing.T) {
 		}
 	}
 }
+
+func TestFrameAncestorsHeaders(t *testing.T) {
+	tests := []struct {
+		value   string
+		wantCSP string
+		wantXFO string
+		wantErr bool
+	}{
+		{"", "frame-ancestors 'none'", "DENY", false},
+		{"'none'", "frame-ancestors 'none'", "DENY", false},
+		{"none", "frame-ancestors 'none'", "DENY", false},
+		{"'self'", "frame-ancestors 'self'", "SAMEORIGIN", false},
+		{"self", "frame-ancestors 'self'", "SAMEORIGIN", false},
+		{"'self' https://dash.example.com", "frame-ancestors 'self' https://dash.example.com", "", false},
+		{"https://a.example https://b.example", "frame-ancestors https://a.example https://b.example", "", false},
+		{"'none' https://dash.example.com", "", "", true},
+		{"'self'; script-src *", "", "", true},
+		{"https://a.example, https://b.example", "", "", true},
+		{"'self'\r\nX-Injected: 1", "", "", true},
+	}
+	for _, tt := range tests {
+		csp, xfo, err := frameAncestorsHeaders(tt.value)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf("frameAncestorsHeaders(%q): expected an error", tt.value)
+			}
+			continue
+		}
+		if err != nil {
+			t.Errorf("frameAncestorsHeaders(%q): unexpected error: %v", tt.value, err)
+			continue
+		}
+		if csp != tt.wantCSP || xfo != tt.wantXFO {
+			t.Errorf("frameAncestorsHeaders(%q) = (%q, %q), want (%q, %q)", tt.value, csp, xfo, tt.wantCSP, tt.wantXFO)
+		}
+	}
+}
+
+func TestFrameHeadersOnResponses(t *testing.T) {
+	tests := []struct {
+		frameAncestors string
+		wantCSP        string
+		wantXFO        string
+	}{
+		{"", "frame-ancestors 'none'", "DENY"},
+		{"'self' https://dash.example.com", "frame-ancestors 'self' https://dash.example.com", ""},
+	}
+	for _, tt := range tests {
+		opts := &Options{
+			Address:        "127.0.0.1",
+			Port:           "0",
+			Quiet:          true,
+			Credential:     "user:pass",
+			FrameAncestors: tt.frameAncestors,
+		}
+		server, err := New(&mockFactory{}, opts)
+		if err != nil {
+			t.Fatalf("failed to create server: %v", err)
+		}
+
+		ctx, cancel := context.WithCancel(context.Background())
+		handler := server.setupHandlers(ctx, cancel, "/", newCounter(0))
+		ts := httptest.NewServer(handler)
+
+		// Check both the index page and a 401 from basic auth, which an
+		// attacker could also try to frame.
+		for _, withAuth := range []bool{true, false} {
+			req, _ := http.NewRequest("GET", ts.URL+"/", nil)
+			if withAuth {
+				req.SetBasicAuth("user", "pass")
+			}
+			resp, err := http.DefaultClient.Do(req)
+			if err != nil {
+				t.Fatalf("GET / failed: %v", err)
+			}
+			resp.Body.Close()
+			if got := resp.Header.Get("Content-Security-Policy"); got != tt.wantCSP {
+				t.Errorf("frame-ancestors %q, auth %v: Content-Security-Policy = %q, want %q", tt.frameAncestors, withAuth, got, tt.wantCSP)
+			}
+			if got := resp.Header.Get("X-Frame-Options"); got != tt.wantXFO {
+				t.Errorf("frame-ancestors %q, auth %v: X-Frame-Options = %q, want %q", tt.frameAncestors, withAuth, got, tt.wantXFO)
+			}
+		}
+
+		ts.Close()
+		cancel()
+	}
+}
+
+func TestNew_RejectsInvalidFrameAncestors(t *testing.T) {
+	_, err := New(&mockFactory{}, &Options{FrameAncestors: "'self'; script-src *"})
+	if err == nil {
+		t.Fatalf("expected New to reject an invalid frame-ancestors value")
+	}
+}

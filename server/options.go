@@ -31,6 +31,7 @@ type Options struct {
 	Height              int    `hcl:"height" flagName:"height" flagDescribe:"Static height of the screen, 0(default) means dynamically resize" default:"0"`
 	WSOrigin            string `hcl:"ws_origin" flagName:"ws-origin" flagDescribe:"A regular expression that matches origin URLs to be accepted by WebSocket. No cross origin requests are acceptable by default" default:""`
 	WSQueryArgs         string `hcl:"ws_query_args" flagName:"ws-query-args" flagDescribe:"Querystring arguments to append to the websocket instantiation" default:""`
+	FrameAncestors      string `hcl:"frame_ancestors" flagName:"frame-ancestors" flagDescribe:"Space-separated list of origins allowed to embed GoTTY in a frame (CSP frame-ancestors syntax, e.g. \"'self' https://dash.example.com\"); 'none' forbids framing" default:"'none'"`
 	EnableWebGL         bool   `hcl:"enable_webgl" flagName:"enable-webgl" flagDescribe:"Enable WebGL renderer" default:"true"`
 	ConfirmClose        bool   `hcl:"confirm_close" flagName:"confirm-close" flagDescribe:"Ask the browser to confirm before closing/reloading the page while a session is connected" default:"true"`
 	MobileKeys          bool   `hcl:"mobile_keys" flagName:"mobile-keys" flagDescribe:"Show a strip of special keys (Esc, Ctrl, Alt, Tab, arrows, ...) above the on-screen keyboard on touch devices" default:"true"`

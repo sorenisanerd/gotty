@@ -77,6 +77,7 @@ By default, GoTTY starts a web server at port 8080. Open the URL on your web bro
    --height value                Static height of the screen, 0(default) means dynamically resize (default: 0) [$GOTTY_HEIGHT]
    --ws-origin value             A regular expression that matches origin URLs to be accepted by WebSocket. No cross origin requests are acceptable by default [$GOTTY_WS_ORIGIN]
    --ws-query-args value         Querystring arguments to append to the websocket instantiation [$GOTTY_WS_QUERY_ARGS]
+   --frame-ancestors value       Space-separated list of origins allowed to embed GoTTY in a frame (CSP frame-ancestors syntax, e.g. "'self' https://dash.example.com"); 'none' forbids framing (default: "'none'") [$GOTTY_FRAME_ANCESTORS]
    --enable-webgl                Enable WebGL renderer (default: true) [$GOTTY_ENABLE_WEBGL]
    --confirm-close               Ask the browser to confirm before closing/reloading the page while a session is connected (default: true) [$GOTTY_CONFIRM_CLOSE]
    --mobile-keys                 Show a strip of special keys (Esc, Ctrl, Alt, Tab, arrows, ...) above the on-screen keyboard on touch devices (default: true) [$GOTTY_MOBILE_KEYS]

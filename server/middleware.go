@@ -21,6 +21,11 @@ func (server *Server) wrapHeaders(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// todo add version
 		w.Header().Set("Server", "GoTTY")
+		// Keep other sites from embedding GoTTY in a frame (clickjacking).
+		w.Header().Set("Content-Security-Policy", server.contentSecurityPolicy)
+		if server.frameOptions != "" {
+			w.Header().Set("X-Frame-Options", server.frameOptions)
+		}
 		handler.ServeHTTP(w, r)
 	})
 }
