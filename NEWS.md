@@ -7,6 +7,19 @@
   `/ - |` right above it; Ctrl, Alt and Shift apply to the next key typed on
   either keyboard. Shown only when writing is permitted. Enabled by default;
   pass `--mobile-keys=false` to disable. Thanks, @ncongduy!
+* A terminal resize the server cannot apply now ends the session with an error
+  naming the dimensions that failed, instead of being ignored. Previously the
+  failure was silent: the pty kept its old size while the browser redrew at
+  the new one. Thanks, @prajexec! (#202)
+* Make the `localcommand` tests portable: `TestNewFactory` now resolves the
+  shell with `LookPath` instead of assuming a fixed path, so the suite runs on
+  macOS as well as Linux. Thanks, @prajexec! (#201)
+* Document running GoTTY behind a reverse proxy: the HTTP/1.1 `Upgrade` hop,
+  the `101 Switching Protocols` handshake to look for when the terminal stays
+  black, and the `Host`/`Origin` match that `--ws-origin` relaxes.
+* Refresh the JavaScript dependencies (webpack, sass, vitest, Playwright,
+  `undici`, `fast-uri`) and rebuild the bundle.
+* Build the Docker image's Go stage on `golang:1.27`.
 
 ##  v1.10.0 (2026-10-10)
 
