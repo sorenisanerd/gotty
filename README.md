@@ -1,6 +1,6 @@
 # ![](https://raw.githubusercontent.com/sorenisanerd/gotty/master/resources/favicon.ico) GoTTY - Share your terminal as a web application
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-80-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-89-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![GitHub release](http://img.shields.io/github/release/sorenisanerd/gotty.svg?style=flat-square)][release]
@@ -470,6 +470,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/sagar-salvi-unskript"><img src="https://avatars.githubusercontent.com/u/95602213?v=4?s=100" width="100px;" alt="sagar-salvi-unskript"/><br /><sub><b>sagar-salvi-unskript</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=sagar-salvi-unskript" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/uddmorningsun"><img src="https://avatars.githubusercontent.com/u/19144683?v=4?s=100" width="100px;" alt="uddmorningsun"/><br /><sub><b>uddmorningsun</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=uddmorningsun" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/a2800276"><img src="https://avatars.githubusercontent.com/u/35631?v=4?s=100" width="100px;" alt="Tim Becker"/><br /><sub><b>Tim Becker</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=a2800276" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ncongduy"><img src="https://avatars.githubusercontent.com/u/61742601?v=4?s=100" width="100px;" alt="Duy Nguyen Cong"/><br /><sub><b>Duy Nguyen Cong</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=ncongduy" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/artile"><img src="https://avatars.githubusercontent.com/u/22233871?v=4?s=100" width="100px;" alt="Taras Kornichuk"/><br /><sub><b>Taras Kornichuk</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=artile" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://poska.eu/"><img src="https://avatars.githubusercontent.com/u/854898?v=4?s=100" width="100px;" alt="Poška"/><br /><sub><b>Poška</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=WeaselScience" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/pancsta"><img src="https://avatars.githubusercontent.com/u/155631569?v=4?s=100" width="100px;" alt="pancsta"/><br /><sub><b>pancsta</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=pancsta" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/euisuh"><img src="https://avatars.githubusercontent.com/u/55032583?v=4?s=100" width="100px;" alt="Euisuh Jeong"/><br /><sub><b>Euisuh Jeong</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=euisuh" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tastypear"><img src="https://avatars.githubusercontent.com/u/1382667?v=4?s=100" width="100px;" alt="tastypear"/><br /><sub><b>tastypear</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=tastypear" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/VXNCXNX"><img src="https://avatars.githubusercontent.com/u/93332837?v=4?s=100" width="100px;" alt="Vincent"/><br /><sub><b>Vincent</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=VXNCXNX" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/prajexec"><img src="https://avatars.githubusercontent.com/u/178256088?v=4?s=100" width="100px;" alt="priyanshu"/><br /><sub><b>priyanshu</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/commits?author=prajexec" title="Code">💻</a> <a href="https://github.com/sorenisanerd/gotty/commits?author=prajexec" title="Tests">⚠️</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://itrooz.fr/"><img src="https://avatars.githubusercontent.com/u/42669835?v=4?s=100" width="100px;" alt="iTrooz"/><br /><sub><b>iTrooz</b></sub></a><br /><a href="https://github.com/sorenisanerd/gotty/issues?q=author%3AiTrooz" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
 </table>

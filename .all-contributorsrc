@@ -735,6 +735,88 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "ncongduy",
+      "name": "Duy Nguyen Cong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61742601?v=4",
+      "profile": "https://github.com/ncongduy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "artile",
+      "name": "Taras Kornichuk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22233871?v=4",
+      "profile": "https://github.com/artile",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "WeaselScience",
+      "name": "Poška",
+      "avatar_url": "https://avatars.githubusercontent.com/u/854898?v=4",
+      "profile": "http://poska.eu/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "pancsta",
+      "name": "pancsta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/155631569?v=4",
+      "profile": "https://github.com/pancsta",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "euisuh",
+      "name": "Euisuh Jeong",
+      "avatar_url": "https://avatars.githubusercontent.com/u/55032583?v=4",
+      "profile": "https://github.com/euisuh",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tastypear",
+      "name": "tastypear",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1382667?v=4",
+      "profile": "https://github.com/tastypear",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "VXNCXNX",
+      "name": "Vincent",
+      "avatar_url": "https://avatars.githubusercontent.com/u/93332837?v=4",
+      "profile": "https://github.com/VXNCXNX",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "prajexec",
+      "name": "priyanshu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/178256088?v=4",
+      "profile": "https://github.com/prajexec",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "iTrooz",
+      "name": "iTrooz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42669835?v=4",
+      "profile": "https://itrooz.fr/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
