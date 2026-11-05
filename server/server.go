@@ -42,6 +42,14 @@ type Server struct {
 // New creates a new instance of Server.
 // Server will use the New() of the factory provided to handle each request.
 func New(factory Factory, options *Options) (*Server, error) {
+	// The credential is also the WebSocket auth token, which auth_token.js
+	// hands to the browser. Unless basic auth protects that endpoint, anyone
+	// could fetch the credential from it, so a credential always turns basic
+	// auth on, however it was configured (flag, env var or config file).
+	if options.Credential != "" {
+		options.EnableBasicAuth = true
+	}
+
 	indexData, err := bindata.Fs.ReadFile("static/index.html")
 	if err != nil {
 		panic("index not found") // must be in bindata

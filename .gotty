@@ -11,7 +11,7 @@
 // enable_basic_auth = false
 
 // [string] Default username and password of basic authentication (user:pass)
-//          To enable basic authentication, set `true` to `enable_basic_auth`
+//          Setting a credential always enables basic authentication
 // credential = "user:pass"
 
 // [bool] Enable random URL generation

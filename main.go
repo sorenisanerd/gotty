@@ -71,9 +71,6 @@ func main() {
 			log.SetOutput(io.Discard)
 		}
 
-		if c.IsSet("credential") {
-			appOptions.EnableBasicAuth = true
-		}
 		if c.IsSet("tls-ca-crt") {
 			appOptions.EnableTLSClientAuth = true
 		}

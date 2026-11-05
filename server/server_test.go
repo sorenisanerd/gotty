@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -363,5 +364,52 @@ func TestWSWrapper_ReadRejectsMessageLargerThanBuffer(t *testing.T) {
 		}
 	case <-time.After(5 * time.Second):
 		t.Fatalf("timed out waiting for Read to return")
+	}
+}
+
+func TestCredentialWithoutEnableBasicAuth_StillRequiresAuth(t *testing.T) {
+	// A credential set without enable_basic_auth (e.g. only in the config
+	// file) must not be served unauthenticated from auth_token.js.
+	opts := &Options{
+		Address:    "127.0.0.1",
+		Port:       "0",
+		Quiet:      true,
+		Credential: "user:pass",
+	}
+
+	server, err := New(&mockFactory{}, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	handler := server.setupHandlers(ctx, cancel, "/", newCounter(0))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	resp, err := http.Get(ts.URL + "/auth_token.js")
+	if err != nil {
+		t.Fatalf("GET auth_token.js failed: %v", err)
+	}
+	body, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("expected %d without credentials, got %d", http.StatusUnauthorized, resp.StatusCode)
+	}
+	if strings.Contains(string(body), "user:pass") {
+		t.Fatalf("credential leaked in unauthenticated response: %q", body)
+	}
+
+	req, _ := http.NewRequest("GET", ts.URL+"/auth_token.js", nil)
+	req.SetBasicAuth("user", "pass")
+	resp, err = http.DefaultClient.Do(req)
+	if err != nil {
+		t.Fatalf("authenticated GET failed: %v", err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected %d with credentials, got %d", http.StatusOK, resp.StatusCode)
 	}
 }
