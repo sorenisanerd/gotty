@@ -295,7 +295,7 @@ func (server *Server) handleAuthToken(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/javascript")
 	// @TODO hashing?
-	w.Write([]byte("var gotty_auth_token = '" + server.options.Credential + "';"))
+	w.Write([]byte("var gotty_auth_token = " + jsString(server.options.Credential) + ";"))
 }
 
 func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
@@ -308,7 +308,7 @@ func (server *Server) handleConfig(w http.ResponseWriter, r *http.Request) {
 
 	lines := []string{
 		"var gotty_term = 'xterm';",
-		"var gotty_ws_query_args = '" + server.options.WSQueryArgs + "';",
+		"var gotty_ws_query_args = " + jsString(server.options.WSQueryArgs) + ";",
 		"var gotty_preferences = " + string(preferences) + ";",
 		fmt.Sprintf("var gotty_confirm_close = %t;", server.options.ConfirmClose),
 		fmt.Sprintf("var gotty_mobile_keys = %t;", server.options.MobileKeys && server.options.PermitWrite),
@@ -452,4 +452,17 @@ func (server *Server) titleVariables(order []string, varUnits map[string]map[str
 	}
 
 	return titleVars
+}
+
+// jsString returns s as a JavaScript string literal. JSON string encoding is
+// valid JavaScript, and encoding/json also escapes quotes, backslashes,
+// control characters, U+2028/U+2029 and <, > and &, so the value can't end
+// the string or a surrounding <script> element.
+func jsString(s string) string {
+	b, err := json.Marshal(s)
+	if err != nil {
+		// json.Marshal never fails for a string.
+		panic(err)
+	}
+	return string(b)
 }

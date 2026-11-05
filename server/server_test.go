@@ -582,3 +582,61 @@ func TestNew_RejectsInvalidFrameAncestors(t *testing.T) {
 		t.Fatalf("expected New to reject an invalid frame-ancestors value")
 	}
 }
+
+func TestJSString(t *testing.T) {
+	tests := []struct {
+		in   string
+		want string
+	}{
+		{"user:pass", `"user:pass"`},
+		{"it's", `"it's"`},
+		{`a"b\c`, `"a\"b\\c"`},
+		{"';alert(1);'", `"';alert(1);'"`},
+		{"</script><script>alert(1)</script>", `"\u003c/script\u003e\u003cscript\u003ealert(1)\u003c/script\u003e"`},
+		{"line\nbreak\u2028", `"line\nbreak\u2028"`},
+	}
+	for _, tt := range tests {
+		if got := jsString(tt.in); got != tt.want {
+			t.Errorf("jsString(%q) = %s, want %s", tt.in, got, tt.want)
+		}
+	}
+}
+
+func TestScripts_EscapeOperatorValues(t *testing.T) {
+	opts := &Options{
+		Address:     "127.0.0.1",
+		Port:        "0",
+		Quiet:       true,
+		Credential:  "user:pa'ss",
+		WSQueryArgs: "a=1';alert(1);'",
+	}
+	server, err := New(&mockFactory{}, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	handler := server.setupHandlers(ctx, cancel, "/", newCounter(0))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	get := func(path string) string {
+		req, _ := http.NewRequest("GET", ts.URL+path, nil)
+		req.SetBasicAuth("user", "pa'ss")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatalf("GET %s failed: %v", path, err)
+		}
+		defer resp.Body.Close()
+		body, _ := io.ReadAll(resp.Body)
+		return string(body)
+	}
+
+	if got, want := get("/auth_token.js"), `var gotty_auth_token = "user:pa'ss";`; got != want {
+		t.Errorf("auth_token.js = %q, want %q", got, want)
+	}
+	if got, want := get("/config.js"), `var gotty_ws_query_args = "a=1';alert(1);'";`; !strings.Contains(got, want) {
+		t.Errorf("config.js does not contain %q:\n%s", want, got)
+	}
+}
