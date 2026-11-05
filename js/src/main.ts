@@ -6,7 +6,6 @@ import { initMobileKeys } from "./mobile-keys";
 
 // @TODO remove these
 declare var gotty_auth_token: string;
-declare var gotty_term: string;
 declare var gotty_ws_query_args: string;
 declare var gotty_preferences: Record<string, unknown>;
 declare var gotty_confirm_close: boolean;

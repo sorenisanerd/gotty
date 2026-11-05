@@ -81,6 +81,9 @@ jobs:
     - name: "Type check (tsc --noEmit)"
       run: "make typecheck"
 
+    - name: "Lint (gofmt + oxlint)"
+      run: "make lint"
+
     - name: "Install browser for end-to-end tests"
       run: "cd js && npx playwright install --with-deps chromium"
 

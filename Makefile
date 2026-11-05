@@ -18,7 +18,7 @@ gotty: main.go assets server/*.go webtty/*.go backend/*.go Makefile
 docker:
 	docker build . -t gotty-bash:$(VERSION)
 
-.PHONY: all docker assets
+.PHONY: all docker assets lint gofmt-check
 assets: bindata/static/js/gotty.js.map \
 	bindata/static/js/gotty.js \
 	bindata/static/index.html \
@@ -65,8 +65,7 @@ tools:
 	go install github.com/mitchellh/gox@latest
 	go install github.com/tcnksm/ghr@latest
 
-test:
-	if [ `go fmt $(go list ./... | grep -v /vendor/) | wc -l` -gt 0 ]; then echo "go fmt error"; exit 1; fi
+test: gofmt-check
 	go test ./...
 
 test-js:
@@ -74,6 +73,13 @@ test-js:
 
 typecheck:
 	cd js && npm run typecheck
+
+lint: gofmt-check
+	cd js && npm run lint
+
+gofmt-check:
+	@out="$$(gofmt -l .)"; \
+	if [ -n "$$out" ]; then echo "gofmt needed on:"; echo "$$out"; exit 1; fi
 
 test-e2e:
 	cd js && npm run test:e2e

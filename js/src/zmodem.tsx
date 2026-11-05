@@ -255,7 +255,7 @@ export class SendFileModal extends Component<SendFileModalProps, SendFileModalSt
     send() {
         Browser.send_files(this.props.session,
             this.filePickerRef.current!.files, {
-                on_offer_response: (f, xfer) => {
+                on_offer_response: () => {
                     this.setState({ state: "started" })
                 },
             }
