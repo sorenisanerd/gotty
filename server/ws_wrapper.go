@@ -31,11 +31,15 @@ func (wsw *wsWrapper) Read(p []byte) (n int, err error) {
 			continue
 		}
 
-		b, err := io.ReadAll(reader)
-		if len(b) > len(p) {
-			return 0, errors.Wrapf(err, "Client message exceeded buffer size")
+		// Read at most one byte more than fits in p, so an oversized message
+		// is detected without buffering all of it.
+		b, err := io.ReadAll(io.LimitReader(reader, int64(len(p))+1))
+		if err != nil {
+			return 0, err
 		}
-		n = copy(p, b)
-		return n, err
+		if len(b) > len(p) {
+			return 0, errors.Errorf("client message exceeded buffer size of %d bytes", len(p))
+		}
+		return copy(p, b), nil
 	}
 }

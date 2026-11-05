@@ -288,3 +288,80 @@ func TestMultiInterfaceBinding_AddressTrimming(t *testing.T) {
 	cancel()
 	<-errCh
 }
+
+func TestWebSocket_RejectsOversizedMessageBeforeAuth(t *testing.T) {
+	// An unauthenticated client must not be able to make the server buffer
+	// an arbitrarily large message.
+	opts := &Options{
+		Address:         "127.0.0.1",
+		Port:            "0",
+		Quiet:           true,
+		EnableBasicAuth: true,
+		Credential:      "user:pass",
+	}
+
+	server, err := New(&mockFactory{}, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	handler := server.setupHandlers(ctx, cancel, "/", newCounter(0))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	wsURL := "ws" + strings.TrimPrefix(ts.URL, "http") + "/ws"
+	conn, _, err := websocket.DefaultDialer.Dial(wsURL, nil)
+	if err != nil {
+		t.Fatalf("dial failed: %v", err)
+	}
+	defer conn.Close()
+
+	// The write may fail partway once the server closes the connection.
+	_ = conn.WriteMessage(websocket.TextMessage, make([]byte, maxWSMessageSize+1))
+
+	conn.SetReadDeadline(time.Now().Add(5 * time.Second))
+	_, _, err = conn.ReadMessage()
+	if err == nil {
+		t.Fatalf("expected the server to close the connection")
+	}
+	if ce, ok := err.(*websocket.CloseError); ok && ce.Code != websocket.CloseMessageTooBig {
+		t.Fatalf("expected close code %d, got %d", websocket.CloseMessageTooBig, ce.Code)
+	}
+}
+
+func TestWSWrapper_ReadRejectsMessageLargerThanBuffer(t *testing.T) {
+	upgrader := websocket.Upgrader{}
+	errCh := make(chan error, 1)
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c, err := upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			errCh <- err
+			return
+		}
+		defer c.Close()
+		_, err = (&wsWrapper{c}).Read(make([]byte, 8))
+		errCh <- err
+	}))
+	defer ts.Close()
+
+	conn, _, err := websocket.DefaultDialer.Dial("ws"+strings.TrimPrefix(ts.URL, "http"), nil)
+	if err != nil {
+		t.Fatalf("dial failed: %v", err)
+	}
+	defer conn.Close()
+	if err := conn.WriteMessage(websocket.TextMessage, []byte("123456789")); err != nil {
+		t.Fatalf("write failed: %v", err)
+	}
+
+	select {
+	case err := <-errCh:
+		if err == nil {
+			t.Fatalf("expected an error for a message larger than the buffer")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatalf("timed out waiting for Read to return")
+	}
+}

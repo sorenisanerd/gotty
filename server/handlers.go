@@ -18,6 +18,12 @@ import (
 	"github.com/sorenisanerd/gotty/webtty"
 )
 
+// maxWSMessageSize is the largest WebSocket message accepted from a client.
+// Legitimate messages are small: the init message carries the auth token and
+// URL arguments, and the client splits input into chunks no larger than the
+// buffer size the server advertises (1 KiB).
+const maxWSMessageSize = 64 * 1024
+
 func (server *Server) generateHandleWS(ctx context.Context, cancel context.CancelFunc, counter *counter) http.HandlerFunc {
 	once := new(int64)
 
@@ -74,6 +80,10 @@ func (server *Server) generateHandleWS(ctx context.Context, cancel context.Cance
 			return
 		}
 		defer conn.Close()
+		// Cap the size of incoming messages. Without this, gorilla/websocket
+		// buffers a message of any size in memory, and the first message is
+		// read before the client has authenticated.
+		conn.SetReadLimit(maxWSMessageSize)
 
 		if server.options.PassHeaders {
 			err = server.processWSConn(ctx, conn, r.Header)
