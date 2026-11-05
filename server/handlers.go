@@ -121,7 +121,7 @@ func (server *Server) processWSConn(ctx context.Context, conn *websocket.Conn, h
 	if err != nil {
 		return errors.Wrapf(err, "failed to authenticate websocket connection")
 	}
-	if init.AuthToken != server.options.Credential {
+	if !credentialsEqual(init.AuthToken, server.options.Credential) {
 		return errors.New("failed to authenticate websocket connection")
 	}
 

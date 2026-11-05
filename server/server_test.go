@@ -469,3 +469,21 @@ func TestAuthToken_RejectsCrossOriginRequests(t *testing.T) {
 		}
 	}
 }
+
+func TestCredentialsEqual(t *testing.T) {
+	tests := []struct {
+		a, b string
+		want bool
+	}{
+		{"user:pass", "user:pass", true},
+		{"", "", true},
+		{"user:pass", "user:pasS", false},
+		{"user:pass", "user:pass2", false},
+		{"user:pass", "", false},
+	}
+	for _, tt := range tests {
+		if got := credentialsEqual(tt.a, tt.b); got != tt.want {
+			t.Errorf("credentialsEqual(%q, %q) = %v, want %v", tt.a, tt.b, got, tt.want)
+		}
+	}
+}

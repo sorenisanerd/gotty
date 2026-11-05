@@ -1,6 +1,8 @@
 package server
 
 import (
+	"crypto/sha256"
+	"crypto/subtle"
 	"encoding/base64"
 	"log"
 	"net/http"
@@ -39,7 +41,7 @@ func (server *Server) wrapBasicAuth(handler http.Handler, credential string) htt
 			return
 		}
 
-		if credential != string(payload) {
+		if !credentialsEqual(credential, string(payload)) {
 			w.Header().Set("WWW-Authenticate", `Basic realm="GoTTY"`)
 			http.Error(w, "authorization failed", http.StatusUnauthorized)
 			return
@@ -48,4 +50,13 @@ func (server *Server) wrapBasicAuth(handler http.Handler, credential string) htt
 		log.Printf("Basic Authentication Succeeded: %s", r.RemoteAddr)
 		handler.ServeHTTP(w, r)
 	})
+}
+
+// credentialsEqual compares two credentials in constant time. Both are
+// hashed first, because subtle.ConstantTimeCompare returns early when the
+// lengths differ and would leak the length of the expected credential.
+func credentialsEqual(a, b string) bool {
+	ha := sha256.Sum256([]byte(a))
+	hb := sha256.Sum256([]byte(b))
+	return subtle.ConstantTimeCompare(ha[:], hb[:]) == 1
 }
