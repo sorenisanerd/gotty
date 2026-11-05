@@ -413,3 +413,59 @@ func TestCredentialWithoutEnableBasicAuth_StillRequiresAuth(t *testing.T) {
 		t.Fatalf("expected %d with credentials, got %d", http.StatusOK, resp.StatusCode)
 	}
 }
+
+func TestAuthToken_RejectsCrossOriginRequests(t *testing.T) {
+	opts := &Options{
+		Address:    "127.0.0.1",
+		Port:       "0",
+		Quiet:      true,
+		Credential: "user:pass",
+	}
+
+	server, err := New(&mockFactory{}, opts)
+	if err != nil {
+		t.Fatalf("failed to create server: %v", err)
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	handler := server.setupHandlers(ctx, cancel, "/", newCounter(0))
+	ts := httptest.NewServer(handler)
+	defer ts.Close()
+
+	tests := []struct {
+		secFetchSite string
+		wantStatus   int
+	}{
+		{"", http.StatusOK},
+		{"same-origin", http.StatusOK},
+		{"none", http.StatusOK},
+		{"same-site", http.StatusForbidden},
+		{"cross-site", http.StatusForbidden},
+	}
+
+	for _, tt := range tests {
+		req, _ := http.NewRequest("GET", ts.URL+"/auth_token.js", nil)
+		req.SetBasicAuth("user", "pass")
+		if tt.secFetchSite != "" {
+			req.Header.Set("Sec-Fetch-Site", tt.secFetchSite)
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatalf("Sec-Fetch-Site %q: request failed: %v", tt.secFetchSite, err)
+		}
+		body, _ := io.ReadAll(resp.Body)
+		resp.Body.Close()
+
+		if resp.StatusCode != tt.wantStatus {
+			t.Errorf("Sec-Fetch-Site %q: expected %d, got %d", tt.secFetchSite, tt.wantStatus, resp.StatusCode)
+		}
+		if got := resp.Header.Get("Cross-Origin-Resource-Policy"); got != "same-origin" {
+			t.Errorf("Sec-Fetch-Site %q: expected Cross-Origin-Resource-Policy same-origin, got %q", tt.secFetchSite, got)
+		}
+		if tt.wantStatus != http.StatusOK && strings.Contains(string(body), "user:pass") {
+			t.Errorf("Sec-Fetch-Site %q: credential leaked in rejected response", tt.secFetchSite)
+		}
+	}
+}

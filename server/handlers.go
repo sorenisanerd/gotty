@@ -276,6 +276,23 @@ func (server *Server) indexVariables(r *http.Request) (map[string]interface{}, e
 }
 
 func (server *Server) handleAuthToken(w http.ResponseWriter, r *http.Request) {
+	// This script exposes the credential as a global variable, so a page on
+	// another origin that includes it with <script src> could read it, with
+	// the browser attaching cached basic-auth credentials to the request.
+	//
+	// Cross-Origin-Resource-Policy makes the browser refuse to hand the
+	// response to another origin. The Sec-Fetch-Site check rejects such
+	// requests on the server; browsers only send that header over HTTPS and
+	// to localhost, so a missing header has to be allowed. "same-site" is
+	// rejected because it covers other ports and subdomains.
+	w.Header().Set("Cross-Origin-Resource-Policy", "same-origin")
+	switch r.Header.Get("Sec-Fetch-Site") {
+	case "", "same-origin", "none":
+	default:
+		http.Error(w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/javascript")
 	// @TODO hashing?
 	w.Write([]byte("var gotty_auth_token = '" + server.options.Credential + "';"))
