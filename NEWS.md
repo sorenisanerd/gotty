@@ -1,3 +1,75 @@
+##  v1.12.0 (unreleased)
+
+* Forbid framing by default, to stop clickjacking. GoTTY sent neither
+  `X-Frame-Options` nor a CSP `frame-ancestors` directive, so any site could
+  load a writable terminal in a hidden iframe and trick the user into typing
+  or pasting commands into it. Because the WebSocket connection is made by the
+  browser, this also made a localhost or LAN-only GoTTY reachable that way.
+  Every response now carries `Content-Security-Policy: frame-ancestors`,
+  defaulting to `'none'`, plus `X-Frame-Options` (`DENY`, or `SAMEORIGIN`)
+  when the value can be expressed with it. The new `--frame-ancestors` option
+  (`frame_ancestors` in the config file) takes a CSP source list such as
+  `"'self' https://dash.example.com"` for setups that embed GoTTY on purpose;
+  values containing `;`, `,` or control characters are rejected.
+  BREAKING: GoTTY can no longer be embedded in a frame unless
+  `--frame-ancestors` allows the embedding origin.
+* Enable basic auth whenever a credential is set. It used to be enabled only
+  when the credential came from `-c` or `GOTTY_CREDENTIAL`, so a credential
+  set in the config file without `enable_basic_auth = true` left every HTTP
+  endpoint unprotected — and `/auth_token.js` handed the credential, which is
+  also the WebSocket auth token, to anyone who asked for it. Config-file users
+  with a credential will now be prompted for it.
+* Stop other origins from reading `auth_token.js`. That script exposes the
+  basic-auth credential as a global variable, so a page on another origin
+  could include it with `<script src>` — the browser attaching cached
+  basic-auth credentials — and read the password. The response now carries
+  `Cross-Origin-Resource-Policy: same-origin`, and requests whose
+  `Sec-Fetch-Site` is `same-site` or `cross-site` are rejected (a missing
+  header is allowed, since browsers only send it over HTTPS and to
+  localhost).
+* Escape the values written into the generated JavaScript. `auth_token.js`
+  and `config.js` pasted the credential and `--ws-query-args` into
+  single-quoted JS strings without escaping, so a value containing a quote
+  broke the page and one like `a=1';alert(1);'` ran as script. Both are now
+  written as JSON-encoded string literals, which also escape backslashes,
+  control characters, U+2028/U+2029 and `<`, `>` and `&`.
+* Stop `--pass-headers` from leaking the credential and from being spoofed.
+  It passed every request header to the command as an `HTTP_*` environment
+  variable, including `Authorization`, which carries GoTTY's basic-auth
+  credential. It also passed header names containing underscores, so a client
+  could send `X_Remote_User` and override the `HTTP_X_REMOTE_USER` variable
+  set by an authenticating proxy. `Authorization` and `Proxy-Authorization`
+  are now dropped, as is any header whose name has characters other than
+  letters, digits and `-`, as web servers do for CGI. `Cookie` is still
+  passed.
+* Compare credentials in constant time. The basic-auth check and the WebSocket
+  auth token check used plain string comparison, which can leak timing
+  information about the expected value. Both now compare SHA-256 hashes with
+  `subtle.ConstantTimeCompare`; hashing first keeps the length of the
+  credential from leaking, since `ConstantTimeCompare` returns early on a
+  length mismatch.
+* Cap the size of WebSocket messages. `gorilla/websocket` buffers messages of
+  any size, and the first message is read before the client authenticates, so
+  an unauthenticated client could exhaust server memory with one huge message
+  (400 MB grew RSS to ~890 MB). Reads are now limited to 64 KiB right after
+  the upgrade, and a message that exceeds the buffer is reported as an error
+  instead of `(0, nil)`.
+* Build releases with the latest stable Go. `setup-go` with
+  `go-version-file: go.mod` installed exactly the version in the `go`
+  directive, so v1.11.0 was built with go1.26.0 and missed later
+  standard-library security fixes. Every `setup-go` step now uses
+  `go-version: stable` with `check-latest: true`; `go.mod` keeps 1.26.0 as
+  the minimum.
+* Fix the `go fmt` check in `make test`, which never examined the tree: the
+  recipe wrote `$(go list ./...)` and make expanded it as an empty make
+  variable, so CI ran `go fmt` against the root package alone. That is why
+  three files carried gofmt drift unnoticed. It is now a `gofmt-check` target
+  running `gofmt -l .`, which both `make test` and the new `make lint` depend
+  on; `lint` also runs `oxlint` over `js/src`, and CI runs it from the
+  `js-tests` job.
+* Refresh the JavaScript dependencies (preact, vitest, jsdom, sass,
+  `@testing-library/preact`) and rebuild the bundle.
+
 ##  v1.11.0 (2026-11-05)
 
 * Add a strip of special keys for phones and tablets. Phone keyboards have
