@@ -36,7 +36,7 @@
         "@xterm/addon-webgl": "^0.19.0",
         "@xterm/xterm": "^6.0.0",
         "bootstrap": "^5.3.7",
-        "preact": "^11.0.1",
+        "preact": "^11.1.1",
         "zmodem.js": "^0.1.10"
     },
     "overrides": {
